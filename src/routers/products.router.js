@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { ProductManager } from "../ProductManager.js";
 
+
+
 const manager = new ProductManager("../products.json");
 
 const router = Router();
@@ -12,7 +14,13 @@ router.get("/", async (req, res) => {
 
   const productos = productLimitados.slice(0, Number(limite));
 
-  if (!limite) res.send(await manager.getProducts());
+
+
+  if (!limite){
+    req.app.get('socketio').emit('updateProduct',await manager.getProducts())
+    res.send(await manager.getProducts());
+  } 
+
   else {
     if(Number(limite)){
           res.send(productos);
@@ -71,6 +79,8 @@ router.post("/", async (req, res) => {
       producto.status,
       producto.category
     );
+    const products = await manager.getProducts()
+    req.app.get('socketio').emit('updateProducts',products)
   return res.json({ Status: "Succes", Mensaje: "Producto creado" });
 });
 
@@ -94,7 +104,9 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   const id = req.params.id;
   // users = users.filter(item => item.id != id)
+
   const producto = await manager.deleteProduct(id);
+  req.app.get('socketio').emit('updateProducts',await manager.getProducts())
   if (producto === false) {
     return res
       .status(400)
@@ -103,6 +115,7 @@ router.delete("/:id", async (req, res) => {
         Mensaje:  Number(id)?`No existe el producto con id ${id} para eliminar`:"Debe ingresar un ID numerico",
       });
   } else {
+   
     res.json({ Status: "Succes",Mensaje: `Producto con id ${id} eliminado` });
   }
 });

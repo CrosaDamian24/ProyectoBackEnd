@@ -17,8 +17,8 @@
 		"price": 950,
 		"thumbnail": "https://lh6.googleusercontent.com/-0FLFbk4padM/VFVS1Q6fz8I/AAAAAAAAZFc/qIZhiLBfbRU/s640/blogger-image--229646297.jpg",
 		"code": "10001",
-		"stock": 50,
-		"status": true,
+		"stock": 20,
+		"status": false,
 		"category": "individual"
 	},
 	{
