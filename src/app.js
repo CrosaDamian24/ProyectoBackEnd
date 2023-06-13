@@ -30,14 +30,6 @@ app.use('/api/carts',  cartsRouter)
 app.use('/products',viewsRouter)
 
 
-//ejemplo handlebars
-// app.get('/ejemplo', (req, res) => {
-//     res.render('ejemplo',{ nombre_vista:'ejemplo'})
-// })
-// app.get('/motor', (req, res) => {
-//     res.render('motor',{ nombre_vista:'motor'})
-// })
-
 
 io.on("connection",socket => {
     console.log('Nuevo coneccion')

@@ -90,6 +90,7 @@ router.put("/:id", async (req, res) => {
   const data = req.body;
 
   const producto = await manager.updateProduct(id, data);
+  req.app.get('socketio').emit('updateProducts',await manager.getProducts())
 
   if (producto === false) {
     return res
