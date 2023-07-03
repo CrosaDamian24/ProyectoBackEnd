@@ -5,30 +5,43 @@ import handlebars from 'express-handlebars'
 import __dirname from './utils.js' 
 import { Server } from 'socket.io'
 import viewsRouter from './routers/views.router.js'
+import mongoose from 'mongoose';
 
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-const httpServer = app.listen(8080, () => console.log('Server Up'))
-const io = new Server(httpServer)
 
-app.set('socketio',io)
 
 //cofiguracion del motor e plantillas handlebars
 app.use(express.static('./public'))
 app.engine('handlebars', handlebars.engine())
-// app.set('views', './views')
-app.set('views',__dirname +'/views')
+app.set('views', './views')
+// app.set('views',__dirname +'/views')
 app.set('view engine','handlebars')
 
 app.get('/',(req,res) => res.render('index'))
 //productos
+app.use('/products',viewsRouter)
 app.use('/api/products',  productsRouter)
 //carts
 app.use('/api/carts',  cartsRouter)
-app.use('/products',viewsRouter)
 
+
+mongoose.set('strictQuery', false)
+try{
+    await mongoose.connect('mongodb+srv://coder:coder@cluster0.xho3yyy.mongodb.net/ecommerce')
+
+  
+}catch(err){
+    console.log(err.message)
+}
+
+
+const httpServer = app.listen(8080, () => console.log('Server Up'))
+const io = new Server(httpServer)
+
+app.set('socketio',io)
 
 
 io.on("connection",socket => {
@@ -38,4 +51,3 @@ io.on("connection",socket => {
     })
 
 })
-

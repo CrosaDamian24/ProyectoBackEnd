@@ -1,17 +1,24 @@
 import { Router } from "express";
-import { ProductManager } from "../ProductManager.js";
+ // con FileSystem
+// import { ProductManager } from "../dao/fsManagers/ProductManager.js";
+import productModel from "../dao/models/product.model.js";
 
-const manager = new ProductManager("../products.json");
+ // con FileSystem
+// const manager = new ProductManager("../products.json");
 
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const products = await manager.getProducts();
+  const products = await productModel.find().lean().exec()
+   // con FileSystem
+  // const products = await manager.getProducts();
   res.render("home", { products });
 });
 
 router.get("/realtimeproducts", async (req, res) => {
-  const products = await manager.getProducts();
+  const products = await productModel.find().lean().exec()
+   // con FileSystem
+  // const products = await manager.getProducts();
 
   res.render("realTimeProducts", { products });
 });

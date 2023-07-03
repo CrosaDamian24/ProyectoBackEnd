@@ -116,5 +116,5 @@ export class ProductManager {
   };
 }
 
-const manager = new ProductManager("./products.json");
+const manager = new ProductManager("../../../products.json");
 

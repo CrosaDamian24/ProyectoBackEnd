@@ -92,7 +92,7 @@ export class Cart {
   };
 }
 
-const cart = new Cart("./carts.json");
+const cart = new Cart("../../../carts.json");
 //  await manager.addProduct("Postre Oreo",
 //  "Oreos, crema y dulce de leche",
 //  1000,
