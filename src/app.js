@@ -6,6 +6,7 @@ import __dirname from './utils.js'
 import { Server } from 'socket.io'
 import viewsRouter from './routers/views.router.js'
 import mongoose from 'mongoose';
+import routerChat from "./routers/chat.router.js"
 
 const app = express()
 app.use(express.json())
@@ -26,6 +27,7 @@ app.use('/products',viewsRouter)
 app.use('/api/products',  productsRouter)
 //carts
 app.use('/api/carts',  cartsRouter)
+app.use("/chat", routerChat)
 
 
 mongoose.set('strictQuery', false)
