@@ -20,7 +20,7 @@ router.get("/:id", async (req, res) => {
   try {
     const id = req.params.id;
 
-    const result = await cartModel.findById(id).lean().exec();
+    const result = await cartModel.findById(id).populate("products.product").lean().exec();
     if (result === null) {
       return res.status(404).json({ status: "error", error: "Not found" });
     }
@@ -104,5 +104,70 @@ router.post("/:cid/product/:pid", async (req, res) => {
   //         return res.send({Status:"Succes",Mensaje:"Producto agregado al carrito"})
   // }
 });
+
+// BORRO PRODUCTO DEL CARRITO
+router.delete("/:cid/product/:pid", async(req, res)=>{
+  try {
+      const cid= req.params.cid
+      const pid= req.params.pid
+      const cart= await cartModel.findById(cid)
+      
+       const indice =  cart.products.findIndex( prod => prod.product == pid)
+
+      cart.products.splice((indice),1)
+     
+      await cartModel.updateOne({_id: cid}, cart)
+      
+      const result= await cartModel.findById(cid).populate("products.product")
+
+      res.status(200).json({status: "success", payload: result})
+  } catch (err) {
+      res.status(500).json({ status: "error", error: err.message})
+  }
+})
+
+// BORRO TODOS LOS PRODUCTOS DEL CARRITO
+router.delete("/:cid", async(req, res)=>{
+  try {
+      const cid= req.params.cid
+
+        
+      await cartModel.updateOne({_id: cid}, { products: []})
+      
+      const result= await cartModel.findById(cid).populate("products.product")
+
+      res.status(200).json({status: "success", payload: result})
+  } catch (err) {
+      res.status(500).json({ status: "error", error: err.message})
+  }
+})
+
+//Actualizo cantidad de productos
+router.put("/:cid/product/:pid", async(req, res)=>{
+  try {
+      const cid= req.params.cid
+      const pid= req.params.pid
+      const data = req.body
+
+       const cart = await cartModel.findById(cid);
+      
+      const valor = data.quantity
+
+      cart.products.map((item) => {
+        if (item.product == pid) {
+    
+          item.quantity = valor
+        }
+      });
+  
+       await cartModel.updateOne({ _id: cid }, cart);
+      
+      const result= await cartModel.findById(cid).populate("products.product")
+
+      res.status(200).json({status: "success", payload: result})
+  } catch (err) {
+      res.status(500).json({ status: "error", error: err.message})
+  }
+})
 
 export default router;

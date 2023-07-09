@@ -11,6 +11,7 @@ const productSchema = new mongoose.Schema({
     thummbnails : { type: [String], default : []}
 })
 
+
 mongoose.set( 'strictQuery',false)
 const productModel = mongoose.model('products',productSchema)
 
