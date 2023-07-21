@@ -23,11 +23,12 @@ app.set('view engine','handlebars')
 
 app.get('/',(req,res) => res.render('index'))
 //productos
-app.use('/products',viewsRouter)
+app.use('/views',viewsRouter)
 app.use('/api/products',  productsRouter)
 //carts
 app.use('/api/carts',  cartsRouter)
 app.use("/chat", routerChat)
+
 
 
 mongoose.set('strictQuery', false)

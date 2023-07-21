@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const productSchema = new mongoose.Schema({
     title : { type:String, requiered : true},
@@ -11,7 +12,7 @@ const productSchema = new mongoose.Schema({
     thummbnails : { type: [String], default : []}
 })
 
-
+productSchema.plugin(mongoosePaginate)
 mongoose.set( 'strictQuery',false)
 const productModel = mongoose.model('products',productSchema)
 

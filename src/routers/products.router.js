@@ -8,36 +8,51 @@ const manager = new ProductManager("../products.json");
 
 const router = Router();
 
-//TODOS LOS PRODUCTOS Y POR LIMITE
+//TODOS LOS PRODUCTOS Y POR limit
 router.get("/", async (req, res) => {
   try{
-    const limit = req.query.limite || 0
-    const result = await productModel.find().limit(limit).lean().exec()
+    const limit = req.query.limit?req.query.limit:10
+    const page = req.query.page?req.query.page:1
+    const stock = req.query.stock?req.query.stock:0
+    const category = req.query.category?req.query.category:''
+    const sort = req.query.sort || 0
+
+    let query={};
+    if(category){
+        query.category={ $regex: new RegExp(category), $options: "i" }
+    }
+    if(stock){
+      query.stock= {$lte: stock}
+    }
+ 
+    // const result = await productModel.find().limit(limit).lean().exec()
+    const result = await productModel.paginate( query,{ limit: limit, page: page, sort: { price: Number(sort) } })
+
     res.status(200).json({status:'succes', payload : result})
   }catch(err){
     res.status(500).json({status:'error', error: err.message})
   }
 
   // con FileSystem
-  // let limite = req.query.limite;
+  // let limit = req.query.limit;
   // const productLimitados = await manager.getProducts();
 
-  // const productos = productLimitados.slice(0, Number(limite));
+  // const productos = productLimitados.slice(0, Number(limit));
 
-  // if (!limite){
+  // if (!limit){
   //   req.app.get('socketio').emit('updateProduct',await manager.getProducts())
   //   res.send(await manager.getProducts());
   // } 
 
   // else {
-  //   if(Number(limite)){
+  //   if(Number(limit)){
   //         res.send(productos);
   //   }else{
   //       res
   //       .status(400)
   //       .send({
   //         Status: "Error",
-  //         Mensaje: "Debe ingresar un valor numerico como limite",
+  //         Mensaje: "Debe ingresar un valor numerico como limit",
   //       })
   //   }
   
