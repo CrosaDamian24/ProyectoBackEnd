@@ -70,7 +70,7 @@ if (email !== 'admin@coderhouse.com' || password !== 'adminCod3r123'){
         // age: 45,
         // password: 'secreto',
         // __v: 0,
-         role: 'User'
+         role: 'Admin'
       }
    }
 
