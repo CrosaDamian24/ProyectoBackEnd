@@ -1,3 +1,14 @@
+<div>
+  <a>Bienvenido: </a>
+  <strong>{{user.first_name}}</strong>
+  <br />
+  <a>Rol: </a>
+  <strong>{{user.role}}</strong>
+  <br />
+  <button {{!-- onclick="addLink(`{{this._id}}`)" --}}><a
+      href="/session/logout"
+    >Cerrar Sesion</a></button>
+</div>
 <h2> Lista de productos:</h2>
 <hr />
 {{!-- {{#each products}}
@@ -25,7 +36,7 @@
       </tr>
     </thead>
     <tbody>
-      {{#each docs}}
+      {{#each products.docs}}
         <tr>
           <td>{{this.title}}</td>
           <td>{{this.description}}</td>
@@ -45,17 +56,17 @@
 
   <div>
     <br />
-    {{#if hasPrevPage}}
-      <a href="{{prevLink}}">Anterior</a>
+    {{#if products.hasPrevPage}}
+      <a href="{{products.prevLink}}">Anterior</a>
     {{/if}}
 
-    {{#if hasNextPage}}
-      <a href="{{nextLink}}">Siguiente</a>
+    {{#if products.hasNextPage}}
+      <a href="{{products.nextLink}}">Siguiente</a>
     {{/if}}
 
-    {{#if page}}
+    {{#if products.page}}
 
-      <a>{{page}}</a>
+      <a>{{products.page}}</a>
     {{/if}}
 
   </div>
