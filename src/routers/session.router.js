@@ -43,14 +43,14 @@ router.post('/login',async(req,res) =>{
 
     const user = await UserModel.findOne({email}).lean().exec()
     // const user = await UserModel.findOne({email,password}).lean().exec()
-    if(!user  && (email !== 'admin@coderhouse.com' || password !== 'adminCod3r123') ){
+    if(!user  && (email !== 'adminCoder@coder.com' || password !== 'adminCod3r123') ){
      
         return res.status(401).render('errors/base',{
             error:'Error en email y/o contraseña'
         })   
    
     }
-if (email !== 'admin@coderhouse.com' || password !== 'adminCod3r123'){
+if (email !== 'adminCoder@coder.com' || password !== 'adminCod3r123'){
     if (!isValidPassword(user,password) ){
         return res.status(401).render('errors/base',{
             error:'Error en email y/o contraseña'
@@ -59,7 +59,7 @@ if (email !== 'admin@coderhouse.com' || password !== 'adminCod3r123'){
     
 }
  
-   if (email !== 'admin@coderhouse.com'){
+   if (email !== 'adminCoder@coder.com'){
     req.session.user = user
    }else{
     req.session.user = {
