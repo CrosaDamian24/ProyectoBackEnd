@@ -3,6 +3,7 @@ import { Router } from "express";
 // import { ProductManager } from "../dao/fsManagers/ProductManager.js";
 import productModel from "../dao/models/product.model.js";
 import cartModel from "../dao/models/cart.model.js";
+import passport from "passport";
 // import session from "express-session";
 
 // con FileSystem
@@ -54,8 +55,9 @@ router.get("/products", async (req, res) => {
       : "";
 
 
-
-    const user = req.session.user;
+//  console.log(req.session.passport.user)
+   
+      const  user = req.session.user
 
 
     res.render("home", { products,user});

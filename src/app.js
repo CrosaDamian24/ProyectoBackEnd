@@ -8,9 +8,10 @@ import viewsRouter from './routers/views.router.js'
 import mongoose from 'mongoose';
 import routerChat from "./routers/chat.router.js"
 import sessionRouter from './routers/session.router.js'
-
 import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 
 const app = express()
@@ -54,6 +55,11 @@ app.use(session({ //SESSION ES UN OBJETO
     resave: true,
     saveUninitialized: true
 }))
+
+// passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 app.use('/views',viewsRouter)
