@@ -1,10 +1,14 @@
 import passport from "passport"
 import local from 'passport-local'
 import UserModel from '../dao/models/user.model.js'
-import { createHash, isValidPassword } from '../utils.js'
+import { createHash, isValidPassword , extractCookie, JWT_PRIVATE_KEY, generateToken} from '../utils.js'
 import GitHubStrategy from 'passport-github2'
+import passport_jwt from "passport-jwt"
+import cartModel  from "../dao/models/cart.model.js"
 
 const LocalStrategy = local.Strategy
+const JWTStrategy = passport_jwt.Strategy
+const ExtractJWT = passport_jwt.ExtractJwt //extrae token de cookie
 
 const initializePassport = () => {
 
@@ -19,9 +23,11 @@ const initializePassport = () => {
                 console.log('User already exists')
                 return done(null, false)
             }
-
+            const cartForNewUser= await cartModel.create({}) //creamos un carrito
             const newUser = {
-                first_name, last_name, email, age, password: createHash(password)
+                first_name, last_name, email, age, password: createHash(password)                ,
+                cart: cartForNewUser._id, //al nuevo usuario le asignamos el carrito que armamos mas arriba
+                role: (email === "adminCoder@coder.com")? "admin" : "user"
             }
             const result = await UserModel.create(newUser)
             return done(null, result)
@@ -40,6 +46,8 @@ const initializePassport = () => {
             }
 
             if (!isValidPassword(user, password)) return done(null, false)
+            const token = generateToken(user)
+            user.token = token
             return done(null, user)
         } catch(err) {
 
@@ -55,16 +63,33 @@ const initializePassport = () => {
         // console.log(profile)
         try {
             const user = await UserModel.findOne({ email: profile._json.email })
-            if (user) return done(null, user)
-            const newUser = await UserModel.create({
-                first_name: profile._json.name,
-                email: profile._json.email
-             
-            })
-            return done(null, newUser)
+            if (user){
+            const token = generateToken(user)
+            user.token = token
+            return done(null, user)}
+            else{
+                const cartForNewUser= await cartModel.create({})
+                const newUser = await UserModel.create({
+                    first_name: profile._json.name,
+                    email: profile._json.email,
+                    cart: cartForNewUser._id
+                
+                })
+                const token = generateToken(newUser)
+                newUser.token = token
+                return done(null, newUser)
+        }
         } catch(err) {
             return done(`Error to login with GitHub => ${err.message}`)
         }
+    }))
+
+    // JWT
+    passport.use('jwt', new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]), //extractCookie importado de utils
+        secretOrKey: JWT_PRIVATE_KEY //constante de clave secreta importada de utils
+    }, async (jwt_payload, done) => {
+        done(null, jwt_payload)//devuelve contenido del jwt
     }))
 
     passport.serializeUser((user, done) => {

@@ -57,7 +57,8 @@ router.get("/products", async (req, res) => {
 
 //  console.log(req.session.passport.user)
    
-      const  user = req.session.user
+      // const  user = req.session.user
+      const user = req.user.user //porque user lo metimos dentro de una variable user en utils, generateToken 
 
 
     res.render("home", { products,user});
@@ -91,9 +92,9 @@ router.get("/carts/:cid", async (req, res) => {
   }
 });
 
-router.get("/", (req, res) => {
-  // res.render("index", {});
-  // res.render("/session/login", {});
-});
+// router.get("/", (req, res) => {
+//   // res.render("index", {});
+//   // res.render("/session/login", {});
+// });
 
 export default router;

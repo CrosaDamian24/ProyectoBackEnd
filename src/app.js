@@ -12,16 +12,15 @@ import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
+import { passportCall } from "./middleware/middleware.js";
+import cookieParser from "cookie-parser";
 
 
 const app = express()
+
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
-
-
-
-  
 //cofiguracion del motor e plantillas handlebars
 // app.use(express.static('./public'))
 app.use(express.static(__dirname + "/public"))
@@ -46,14 +45,15 @@ const MONGO_DB_NAME = "ecommerce"
 
 // MIDLEWARE CREA SESSION Y GUARDA EN DB MONGO
 app.use(session({ //SESSION ES UN OBJETO
-    store: MongoStore.create({ //ALMACENA EN MONGO
-        mongoUrl: MONGO_URI,
-        dbName: MONGO_DB_NAME,
+    // store: MongoStore.create({ //ALMACENA EN MONGO
+    //     mongoUrl: MONGO_URI,
+    //     dbName: MONGO_DB_NAME,
 
-    }),
+    // }),
     secret: "palabraclave",
     resave: true,
     saveUninitialized: true
+   
 }))
 
 // passport
@@ -62,7 +62,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
-app.use('/views',viewsRouter)
+app.use('/views',passportCall("jwt"), viewsRouter)
 app.use('/api/products',  productsRouter)
 //carts
 app.use('/api/carts',  cartsRouter)
