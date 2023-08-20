@@ -4,17 +4,19 @@ import cartsRouter from './routers/carts.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js' 
 import { Server } from 'socket.io'
-import viewsRouter from './routers/views.router.js'
+import viewsRouter from './routers/products.views.router.js'
+import cartsViewsRouter from './routers/carts.views.router.js'
 import mongoose from 'mongoose';
 import routerChat from "./routers/chat.router.js"
-import sessionRouter from './routers/session.router.js'
+import sessionsRouter from './routers/sessions.router.js'
+import sessionsViewsRouter from './routers/sessions.views.router.js'
 import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import { passportCall } from "./middleware/middleware.js";
 import cookieParser from "cookie-parser";
-
+import config from './config/config.js';
 
 const app = express()
 
@@ -39,8 +41,8 @@ app.get('/',(req,res) => res.render('sessions/login'))
 
 
 
-const MONGO_URI = "mongodb+srv://coder:coder@cluster0.xho3yyy.mongodb.net/"
-const MONGO_DB_NAME = "ecommerce"
+
+const MONGO_CONNECT = config.connect
 
 
 // MIDLEWARE CREA SESSION Y GUARDA EN DB MONGO
@@ -63,24 +65,25 @@ app.use(passport.session())
 
 
 app.use('/views',passportCall("jwt"), viewsRouter)
+app.use('/views',passportCall("jwt"), cartsViewsRouter)
 app.use('/api/products',  productsRouter)
 //carts
 app.use('/api/carts',  cartsRouter)
 app.use("/chat", routerChat)
-app.use("/session", sessionRouter) //ruta crea session
+app.use("/session", sessionsRouter) //ruta crea session
+app.use("/session", sessionsViewsRouter) //ruta crea session
 
 
 mongoose.set('strictQuery', false)
 try{
-    await mongoose.connect('mongodb+srv://coder:coder@cluster0.xho3yyy.mongodb.net/ecommerce')
+    await mongoose.connect(MONGO_CONNECT)
    
   
 }catch(err){
     console.log(err.message)
 }
 
-
-const httpServer = app.listen(8080, () => console.log('Server Up'))
+const httpServer = app.listen(config.port, () => console.log('Server Up'))
 const io = new Server(httpServer)
 
 app.set('socketio',io)
