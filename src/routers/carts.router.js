@@ -1,14 +1,13 @@
 import express from "express";
 import { Router } from "express";
 import { Cart } from "../dao/fsManagers/Cart.js";
-import cartModel from "../dao/models/cart.model.js";
-import productModel from "../dao/models/product.model.js";
 import { getCartByIdController,
-         createProductController,
+        createCartController,
          addProductInCart ,
          deleteProductInCartController,
-         deleteAllProductsInCartController,
-         updateProductInCart} from '../controllers/carts.controller.js'
+         clearCartController,
+         updateProductInCart,
+         createTicketController} from '../controllers/carts.controller.js'
 // con FileSystem
 // import { ProductManager } from '../dao/fsManagers/ProductManager.js'
 
@@ -25,7 +24,7 @@ const router = Router();
 router.get("/:id", getCartByIdController);
 
 //AGREGO carrito
-router.post("/", createProductController);
+router.post("/", createCartController);
 
 //AGREGO productos a carrito existente
 router.post("/:cid/product/:pid", addProductInCart);
@@ -34,9 +33,12 @@ router.post("/:cid/product/:pid", addProductInCart);
 router.delete("/:cid/product/:pid", deleteProductInCartController)
 
 // BORRO TODOS LOS PRODUCTOS DEL CARRITO
-router.delete("/:cid",deleteAllProductsInCartController)
+router.delete("/:cid",clearCartController)
 
 //Actualizo cantidad de productos
 router.put("/:cid/product/:pid", updateProductInCart)
+
+//COMPRA
+router.post("/:cid/purchase", createTicketController);
 
 export default router;

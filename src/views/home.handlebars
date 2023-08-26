@@ -4,6 +4,7 @@
   <br />
   <a>Rol: </a>
   <strong>{{user.role}}</strong>
+     <a  href="/api/carts/{{user.cart}}" id="cart">Cart</a>
   <br />
   <button {{!-- onclick="addLink(`{{this._id}}`)" --}}><a
       href="/session/logout"
@@ -21,7 +22,7 @@
         </li>
     </div>
 {{/each}} --}}
-<div>
+<div >
   <table>
     <thead>
       <tr>
@@ -37,6 +38,8 @@
     </thead>
     <tbody>
       {{#each products.docs}}
+
+ 
         <tr>
           <td>{{this.title}}</td>
           <td>{{this.description}}</td>
@@ -45,12 +48,18 @@
           <td>{{this.stock}}</td>
           <td>{{this.category}}</td>
           <td>{{this.thumbnails}}</td>
-          <td><button
+          <td>
+            <button
               class="btn btn-success"
               onclick="addLink(`{{this._id}}`)"
+               {{!-- onclick="addLink(`{{this._id}}`)" --}}
+               {{!-- onclick="addLink(`{{this._id}}`)" --}}
+
             >Add</button></td>
-        </tr>
+         </tr>
       {{/each}}
+      
+
     </tbody>
   </table>
 
@@ -72,4 +81,5 @@
   </div>
 
 </div>
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/addLink.js"></script>

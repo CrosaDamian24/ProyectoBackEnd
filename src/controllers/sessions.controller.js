@@ -1,6 +1,7 @@
 import passport from "passport";
 import { JWT_COOKIE_NAME } from '../utils.js'
 import { signedCookie } from "cookie-parser";
+import UserDTO from "../dto/user.js";
 
 export const register = async(req, res) => {
     res.redirect('/session/login')
@@ -45,5 +46,7 @@ export const getGithub =  async(req, res) => {}
 
 export const getCurrent = (req,res)=>{
     if(!req.user) return res.status(401).json({status: "error", error: "Sesión no detectada, inicia sesión"})
-    res.status(200).json({status: "success", payload: req.user})
+    let results = new UserDTO(req.user)
+    // res.status(200).json({status: "success", payload: results})
+    res.status(200).json({status: "success", payload: results})
 }

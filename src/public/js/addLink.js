@@ -1,7 +1,16 @@
+
+
+const cartLink = document?.getElementById("cart");
+const hrefValue = cartLink?.getAttribute("href");
+const cart = hrefValue?.match(/\/api\/carts\/(.+)/)[1];
+ 
 const addLink = async (_id) => {
     try {
-        console.log(_id)
-        const cart = "64a9b8e3745ff633fc7a3142"
+        //  let select_file = req.query.file;
+        
+      console.log(cart)
+      console.log(_id)
+       
         const res = await fetch(`/api/carts/${cart}/product/${_id}`, {
             method: "POST", //
         })

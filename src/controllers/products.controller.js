@@ -1,24 +1,11 @@
-import productModel from "../dao/models/product.model.js";
+
+import { ProductService } from "../services/index.js";
+
 
 export const  getAllProductsController = async (req, res) => {
     try{
-      const limit = req.query.limit?req.query.limit:10
-      const page = req.query.page?req.query.page:1
-      const stock = req.query.stock?req.query.stock:0
-      const category = req.query.category?req.query.category:''
-      const sort = req.query.sort || 0
-  
-      let query={};
-      if(category){
-          query.category={ $regex: new RegExp(category), $options: "i" }
-      }
-      if(stock){
-        query.stock= {$lte: stock}
-      }
-   
-      // const result = await productModel.find().limit(limit).lean().exec()
-      const result = await productModel.paginate( query,{ limit: limit, page: page, sort: { price: Number(sort) } })
-  
+      // const result = await getProducts(req,res)
+      const result = await ProductService.getAllPaginate(req,res) 
       res.status(200).json({status:'succes', payload : result})
     }catch(err){
       res.status(500).json({status:'error', error: err.message})
@@ -54,8 +41,9 @@ export const  getAllProductsController = async (req, res) => {
 
     try{
       const id = req.params.id
-      const data = req.body
-      const result = await productModel.findById(id).lean().exec()
+  
+      // const result = await productModel.findById(id).lean().exec()
+      const result = await ProductService.getById(id)
       if (result === null){
         return res.status(404).json({ status : 'error', error : 'Not found'})
       } 
@@ -83,8 +71,8 @@ export const  getAllProductsController = async (req, res) => {
   export const createProductController = async (req, res) => {
     try{
       const product = req.body
-      const result = await productModel.create(product)
-      const products = await productModel.find().lean().exec()
+      const result = await ProductService.create(product)
+      const products = await ProductService.getAll(req,res)
   
       req.app.get('socketio').emit('updateProducts',products)
       res.status(201).json({ status : 'succes', payload : result})
@@ -129,7 +117,7 @@ export const  getAllProductsController = async (req, res) => {
     try {
         const id = req.params.id
         const data = req.body
-        const result = await productModel.findByIdAndUpdate(id,data,{ returnDocument : 'after'})
+        const result = await ProductService.update(id,data)
         if (result === null){
           return res.status(404).json({ status : 'error', error: 'Not found'})
         }
@@ -159,7 +147,8 @@ export const  getAllProductsController = async (req, res) => {
   
     try {
       const id = req.params.id
-      const result = await productModel.findByIdAndDelete(id)
+      // const result = await productModel.findByIdAndDelete(id)
+      const result = await ProductService.delete(id)
       if (result === null){
         return res.status(404).json({ status : 'error', error: 'Not found'})
       }

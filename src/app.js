@@ -90,7 +90,7 @@ app.set('socketio',io)
 
 
 io.on("connection",socket => {
-    console.log('Nuevo coneccion')
+    // console.log('Se actualiza realtimeproducts')
     socket.on('products', data =>{
         io.emit('updateProducts',data)
     })

@@ -9,7 +9,8 @@ export default {
  
         //  uri: process.env.MONGO_URI,
         //  dbname: process.env.MONGO_DBNAME,
-         connect: process.env.MONGO_CONNECT
+         connect: process.env.MONGO_CONNECT,
+         persistence: process.env.PERSISTANCE
 
 
 }
