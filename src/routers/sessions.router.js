@@ -6,8 +6,10 @@ import { register,
         getFailLogin,
         getLogout,
         getGithubcallback ,
-        getGithub,getCurrent} from "../controllers/sessions.controller.js";
-
+        getGithub,
+        getCurrent} from "../controllers/sessions.controller.js";
+// 
+import { passportCall  } from "../middleware/middleware.js";
 
 const router = Router()
 
@@ -37,7 +39,7 @@ router.get('/githubcallback',
     passport.authenticate('github', {failureRedirect: '/login'}),getGithubcallback
 )
 
-//datos cliente
+// datos cliente
 router.get("/current", getCurrent) 
 
 export default router 

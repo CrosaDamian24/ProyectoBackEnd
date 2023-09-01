@@ -5,6 +5,7 @@ import { getAllProductsController,
          createProductController,
          updateProductController,
          deleteProductController} from '../controllers/products.controller.js'
+import { handlePolicies } from "../middleware/middleware.js";
 
 const manager = new ProductManager("../products.json");
 
@@ -17,12 +18,12 @@ router.get("/", getAllProductsController);
 router.get("/:id",getProductByIdController);
 
 //AGREGO PRODUCTOS
-router.post("/", createProductController);
+router.post("/",handlePolicies(['ADMIN']),  createProductController);
 
 //ACTUALIZAR
-router.put("/:id",updateProductController);
+router.put("/:id",handlePolicies(['ADMIN']),updateProductController);
 
 //BORRAR POR ID
-router.delete("/:id",deleteProductController);
+router.delete("/:id",handlePolicies(['ADMIN']),deleteProductController);
 
 export default router;

@@ -14,9 +14,12 @@ export const getFailRegister = (req, res) => {
 export const login = async (req, res) => {
     // const user = await UserModel.findOne({email}).lean().exec()
     //  req.session.user = req.user
-
+   
+    //  res.cookie(JWT_COOKIE_NAME, req.user.token,signedCookie("secret")).redirect('/views/products/')
+    //  res.cookie(JWT_COOKIE_NAME, req.user.token,signedCookie("secret")).status(401).json({ status : 'ok', token : req.user.token})
      res.cookie(JWT_COOKIE_NAME, req.user.token,signedCookie("secret")).redirect('/views/products/')
     // res.redirect('/views/products/')
+    // res.status(401).json({ status : 'ok', paso : "paso OK"})
 }
 
 export const getFailLogin =  (req, res) => {
@@ -24,12 +27,12 @@ export const getFailLogin =  (req, res) => {
 }
 
 export const getLogout = (req, res) => {
-    // req.session.destroy(err => {
-    //     if(err) {
-    //         console.log(err);
-    //         res.status(500).render('errors/base', {error: err})
-    //     } else res.redirect('/session/login')
-    // })
+    req.session.destroy(err => {
+        // if(err) {
+        //     console.log(err);
+        //     res.status(500).render('errors/base', {error: err})
+        // } else res.redirect('/session/login')
+    })
     res.clearCookie(JWT_COOKIE_NAME).redirect("/")
     
 }
@@ -45,6 +48,7 @@ export const getGithubcallback = async(req, res) => {
 export const getGithub =  async(req, res) => {}
 
 export const getCurrent = (req,res)=>{
+
     if(!req.user) return res.status(401).json({status: "error", error: "Sesión no detectada, inicia sesión"})
     let results = new UserDTO(req.user)
     // res.status(200).json({status: "success", payload: results})

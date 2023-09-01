@@ -1,10 +1,13 @@
-<div>
-  <a>Bienvenido: </a>
+<div id="formulario1">
+
+
+  <a    >Bienvenido: </a>
   <strong>{{user.first_name}}</strong>
   <br />
   <a>Rol: </a>
-  <strong>{{user.role}}</strong>
-     <a  href="/api/carts/{{user.cart}}" id="cart">Cart</a>
+  <strong  href="/views/carts/{{user.role}}" id="role" >{{user.role}} </strong>
+     <a  href="/views/carts/{{user.cart}}" id="cart">Cart</a>
+      {{!-- <a  href="/api/carts/{{user.cart}}" id="cart">Cart</a> --}}
   <br />
   <button {{!-- onclick="addLink(`{{this._id}}`)" --}}><a
       href="/session/logout"
@@ -49,13 +52,16 @@
           <td>{{this.category}}</td>
           <td>{{this.thumbnails}}</td>
           <td>
-            <button
+                   <button id="boton"
               class="btn btn-success"
               onclick="addLink(`{{this._id}}`)"
                {{!-- onclick="addLink(`{{this._id}}`)" --}}
                {{!-- onclick="addLink(`{{this._id}}`)" --}}
+              disabled=""
+              onload="myFunction()"
+            >Add </button>
+            </td>
 
-            >Add</button></td>
          </tr>
       {{/each}}
       
@@ -81,5 +87,11 @@
   </div>
 
 </div>
+     <script>
+function myFunction() {
+    document.getElementById("boton").setAttribute("disabled", "true"); 
+  }
+
+    </script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/addLink.js"></script>

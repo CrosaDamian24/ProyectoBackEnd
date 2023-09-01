@@ -42,13 +42,21 @@ const initializePassport = () => {
         try {
             const user = await UserModel.findOne({ email: username })
             if (!user ) {
+               
                 return done(null, false)
+                
             }
 
-            if (!isValidPassword(user, password)) return done(null, false)
+            if (!isValidPassword(user, password)) {
+            
+            return done(null, false)}
             const token = generateToken(user)
+            // console.log(token)
             user.token = token
-            return done(null, user)
+            
+             return done(null, user)
+            
+
         } catch(err) {
 
         }
@@ -72,7 +80,8 @@ const initializePassport = () => {
                 const newUser = await UserModel.create({
                     first_name: profile._json.name,
                     email: profile._json.email,
-                    cart: cartForNewUser._id
+                    cart: cartForNewUser._id,
+                    role: "user"
                 
                 })
                 const token = generateToken(newUser)

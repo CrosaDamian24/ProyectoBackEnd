@@ -1,6 +1,6 @@
 import { CartService } from "../services/index.js";
 import { ProductService } from "../services/index.js";
-import { TicketService } from "../services/index.js";
+import { TicketService, UserService } from "../services/index.js";
 
 export const getCartByIdController = async (req, res) => {
   try {
@@ -47,6 +47,7 @@ export const addProductInCart = async (req, res) => {
   try {
     const cid = req.params.cid;
     const pid = req.params.pid;
+
     const carrito = await CartService.getById(cid);
     // const carrito = await cartModel.findById(cid);
 
@@ -102,11 +103,15 @@ export const deleteProductInCartController = async (req, res) => {
     // const cart= await cartModel.findById(cid)
     const cart = await CartService.getById(cid);
 
-    const indice = cart.products.findIndex((prod) => prod.product == pid);
+    const indice = cart.products.findIndex((prod) => prod.product.toString() === pid);
 
-    cart.products.splice(indice, 1);
 
-    await CartService.updateOne({ _id: cid }, cart);
+    if(indice>=0)
+    {
+      cart.products.splice(indice, 1);
+  
+      await CartService.updateOne({ _id: cid }, cart);
+    }
     // await cartModel.updateOne({_id: cid}, cart)
 
     // const result= await cartModel.findById(cid).populate("products.product")
@@ -166,16 +171,16 @@ export const createTicketController = async (req, res) => {
   try {
     const cid = req.params.cid;
     const cart = await CartService.getByIdPopulate(cid);
-  const totCompra = []
+    const totCompra = [];
 
-   const promises= cart.products.map(async (data) => {
+    const promises = cart.products.map(async (data) => {
       let listProduct = await ProductService.getById(
         data.product._id.toString()
       );
 
       if (data.quantity <= listProduct.stock) {
         // Actualizo el stock del producto
-         totCompra.push(data.quantity*listProduct.price)
+        totCompra.push(data.quantity * listProduct.price);
         const quantity = listProduct.stock - data.quantity;
         listProduct.stock = quantity;
         await ProductService.update(listProduct._id, listProduct);
@@ -184,41 +189,54 @@ export const createTicketController = async (req, res) => {
         // const cart= await CartService.getById(cid)
 
         const indice = await cart.products.findIndex(
-          (prod) => prod.product == listProduct._id
+          (prod) => prod.product.toString() === listProduct._id.toString()
         );
-
-        await cart.products.splice(indice, 1);
-
-        await CartService.updateOne({ _id: cart._id.toString() }, cart);
-        
-      }   
-    }
-     
-    );
    
-    Promise.all(promises)
-    .then(async() => {
-      // envía el arreglo todas las respuestas. Todas pasaron
-  //     console.log(totCompra)
-  //     const newTicket ={
-  //       code: "007",
-  //   //  purchase_datetime: Date,
-  //    amount: totCompra.value,
-  //    purchaser: "da"
-  //  };
-  //    await TicketService.create(newTicket);
-      res.status(200).json({ status: "success", SinComprar: cart.products });
-      
+        if(indice>=0){
 
-    }).catch((err) => {
-      // hubo alguna respuesta. Informo.
-      res.status(500).json({ status: "Error promesa", error: err.message });
+          await cart.products.splice(indice, 1);
+  
+          await CartService.updateOne({ _id: cart._id.toString() }, cart);
+        }
+      }
     });
+
+    Promise.all(promises)
+      .then(async () => {
+        // envía el arreglo todas las respuestas. Todas pasaron
+        //     console.log(totCompra)
+        const total = totCompra.reduce((a, b) => a + b, 0);
+        if (total != 0) {
+          const tickets = await TicketService.getAll(req, res);
+          const code =
+            tickets.length > 0
+              ? Number(tickets[tickets.length - 1].code) + 1
+              : 1;
+          const user = await UserService.getAll(req, res);
+
+          const filtro = await user.filter(
+            (element) => element.cart == cart._id.toString()
+          );
+
+          const newTicket = {
+            code: code.toString(),
+            //  purchase_datetime: Date,
+            amount: total,
+            purchaser: filtro[0].email,
+          };
+          //  console.log(code)
+          await TicketService.create(newTicket);
+        }
+        res.status(200).json({ status: "success", SinComprar: cart.products });
+      })
+      .catch((err) => {
+        // hubo alguna respuesta. Informo.
+        res.status(500).json({ status: "Error promesa", error: err.message });
+      });
     // res.status(200).json({ status: "success", SinComprar: cart.products });
 
     // console.log(result.products.product)
 
- 
     // res.status(200).json({ status: "success", payload: result });
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });

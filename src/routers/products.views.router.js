@@ -5,6 +5,7 @@ import { getAllProductsViewsController,
          realTimeProducts } from '../controllers/products.views.controller.js'
 import passport from "passport";
 // import session from "express-session";
+import { passportCall ,handlePolicies } from "../middleware/middleware.js";
 
 // con FileSystem
 // const manager = new ProductManager("../products.json");
@@ -20,9 +21,9 @@ const router = Router();
 
 
 
-router.get("/products", getAllProductsViewsController);
+router.get("/products",getAllProductsViewsController);
 
-router.get("/realtimeproducts", realTimeProducts);
+router.get("/realtimeproducts",passportCall("jwt"), realTimeProducts);
 
 
 // router.get("/", (req, res) => {

@@ -121,7 +121,7 @@ export const  getAllProductsController = async (req, res) => {
         if (result === null){
           return res.status(404).json({ status : 'error', error: 'Not found'})
         }
-        const products = await productModel.find().lean().exec()
+        const products = await ProductService.getById(id)
            req.app.get('socketio').emit('updateProducts',products)
         res.status(200).json({ status : 'succes', payload : result})
     }catch(err){
@@ -152,7 +152,7 @@ export const  getAllProductsController = async (req, res) => {
       if (result === null){
         return res.status(404).json({ status : 'error', error: 'Not found'})
       }
-      const products = await productModel.find().lean().exec()
+      const products = await ProductService.getAll()
          req.app.get('socketio').emit('updateProducts',products)
       res.status(200).json({ status : 'succes', payload : result})
   }catch(err){

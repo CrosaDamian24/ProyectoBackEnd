@@ -14,9 +14,10 @@ import session from "express-session"; //DEPENDENCIA SESSION (guarda cookie)
 import MongoStore from "connect-mongo"; //DEPENDENCIA guardar datos en MONGO
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
-import { passportCall } from "./middleware/middleware.js";
+import { passportCall ,handlePolicies } from "./middleware/middleware.js";
 import cookieParser from "cookie-parser";
 import config from './config/config.js';
+import messagesModel from "./models/messages.model.js";
 
 const app = express()
 
@@ -65,13 +66,13 @@ app.use(passport.session())
 
 
 app.use('/views',passportCall("jwt"), viewsRouter)
-app.use('/views',passportCall("jwt"), cartsViewsRouter)
-app.use('/api/products',  productsRouter)
+app.use('/views',passportCall("jwt"), handlePolicies(['USER']), cartsViewsRouter)
+app.use('/api/products',passportCall("jwt"), productsRouter)
 //carts
-app.use('/api/carts',  cartsRouter)
-app.use("/chat", routerChat)
-app.use("/session", sessionsRouter) //ruta crea session
-app.use("/session", sessionsViewsRouter) //ruta crea session
+app.use('/api/carts',passportCall("jwt"),handlePolicies(['USER']),cartsRouter)
+app.use("/chat",passportCall("jwt"), handlePolicies(['USER']), routerChat)
+app.use("/session",sessionsRouter) //ruta crea session
+app.use("/session",passportCall("jwt"), sessionsViewsRouter) //ruta crea session
 
 
 mongoose.set('strictQuery', false)
@@ -94,6 +95,21 @@ io.on("connection",socket => {
     socket.on('products', data =>{
         io.emit('updateProducts',data)
     })
+    console.log("New client connected")
+        socket.on("message", async data => {
+        await messagesModel.create(data)
+        let messages = await messagesModel.find().lean().exec()
+        io.emit("logs", messages)
+        })
 
 })
+
+// socketServer.on("connection", socket => {
+//     console.log("New client connected")
+//     socket.on("message", async data => {
+//     await messagesModel.create(data)
+//     let messages = await messagesModel.find().lean().exec()
+//     socketServer.emit("logs", messages)
+//     })
+// })
 
