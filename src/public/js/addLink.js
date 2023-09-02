@@ -5,28 +5,28 @@ const hrefValue = cartLink?.getAttribute("href");
 const cart = hrefValue?.match(/\/views\/carts\/(.+)/)[1];
 //  const cart = hrefValue?.match(/\/api\/carts\/(.+)/)[1];
 
-window.onload = inicio;
+// window.onload = inicio;
 
-function inicio() {
-//    console.log('El nombre de usuario o clave está vacío')
-   const role = document?.getElementById("role");
-   const boton = document?.getElementById("boton");
-   const hrefValue1 = boton?.getAttribute("disabled");
-const hrefValue = role?.getAttribute("href");
-const rol = hrefValue?.match(/\/views\/carts\/(.+)/)[1];
-console.log((rol==='admin')?"false":"true")
-boton?.setAttribute("disabled","true")
-console.log(boton)
+// function inicio() {
+// //    console.log('El nombre de usuario o clave está vacío')
+//    const role = document?.getElementById("role");
+//    const boton = document?.getElementById("boton");
+//    const hrefValue1 = boton?.getAttribute("disabled");
+// const hrefValue = role?.getAttribute("href");
+// const rol = hrefValue?.match(/\/views\/carts\/(.+)/)[1];
+// console.log((rol==='admin')?"false":"true")
+// boton?.setAttribute("disabled","true")
+// console.log(boton)
 
-function myFunction() {
-    document.getElementById("myH1").setAttribute("class", "democlass"); 
-  }
+// function myFunction() {
+//     document.getElementById("myH1").setAttribute("class", "democlass"); 
+//   }
 
-return (rol==='admin')?false:true
+// return (rol==='admin')?false:true
 
 
 
-}
+// }
 
 const prueba =  ()=>{
    inicio()
