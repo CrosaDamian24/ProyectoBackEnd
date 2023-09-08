@@ -1,5 +1,8 @@
 
 import { ProductService } from "../services/index.js";
+import CustomError from '../services/errors/custom_error.js'
+import EErros from '../services/errors/enums.js'
+import { generateErrorInfo } from '../services/errors/info.js'
 
 
 export const  getAllProductsController = async (req, res) => {
@@ -68,18 +71,50 @@ export const  getAllProductsController = async (req, res) => {
     //   : res.send(await manager.getProductById(Number(id)));
   }
 
-  export const createProductController = async (req, res) => {
+  export const createProductController = async (req, res,next) => {
     try{
       const product = req.body
+
+      if (!product.title || !product.description || !product.price || 
+        !product.stock || !product.category){
+        
+        CustomError.createError({
+          name: "Product creation error",
+          cause: generateErrorInfo(product),
+          message:  "Error trying to create a product",
+          code: EErros.INVALID_TYPES_ERROR
+      })
+      }
       const result = await ProductService.create(product)
       const products = await ProductService.getAll(req,res)
   
       req.app.get('socketio').emit('updateProducts',products)
       res.status(201).json({ status : 'succes', payload : result})
   
-    }catch(err){
-      res.status(500).json({ status : 'error', error : err.message})
-  
+    }catch(error)
+    {
+       next(error)
+      // res.status(500).json({ status : 'error', error : err.message})
+    }
+      // const product = req.body
+      // if (!product.title || !product.description || !product.price || !product.code ||
+      //   !product.stock || !product.category){
+      //   CustomError.createError({
+      //     name: "Product creation error",
+      //     cause: generateErrorInfo(product),
+      //     message:  "Error trying to create a product",
+      //     code: EErros.INVALID_TYPES_ERROR
+      // })
+      // }
+      
+      //  res.status(500).json({ status : 'error', error : err.message})
+      // if (err.code == 11000){
+        
+      //   console.log("paasa") 
+      // }
+   
+
+ 
     }
   
     // con FileSystem
@@ -111,7 +146,7 @@ export const  getAllProductsController = async (req, res) => {
     //   const products = await manager.getProducts()
     //   req.app.get('socketio').emit('updateProducts',products)
     // return res.json({ Status: "Succes", Mensaje: "Producto creado" });
-  }
+
 
   export const updateProductController =  async (req, res) => {
     try {

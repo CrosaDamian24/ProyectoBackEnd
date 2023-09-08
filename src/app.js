@@ -1,6 +1,7 @@
 import express from 'express';
 import productsRouter from './routers/products.router.js'
 import cartsRouter from './routers/carts.router.js'
+import routerMoking from './routers/moking.router.js'
 import handlebars from 'express-handlebars'
 import __dirname from './utils.js' 
 import { Server } from 'socket.io'
@@ -18,6 +19,8 @@ import { passportCall ,handlePolicies } from "./middleware/middleware.js";
 import cookieParser from "cookie-parser";
 import config from './config/config.js';
 import messagesModel from "./models/messages.model.js";
+import errorHandler from './middleware/error.js'
+
 
 const app = express()
 
@@ -33,6 +36,7 @@ app.set('views',__dirname +'/views')
 app.set('view engine','handlebars')
 
 // app.get('/',(req,res) => res.render('index'))
+// app.get('/mockingproducts')
 
 app.get('/',(req,res) => res.render('sessions/login'))
 
@@ -65,16 +69,17 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
+
 app.use('/views',passportCall("jwt"), viewsRouter)
 app.use('/views',passportCall("jwt"), handlePolicies(['USER']), cartsViewsRouter)
-app.use('/api/products',passportCall("jwt"), productsRouter)
+app.use('/api/products',passportCall("jwt"),productsRouter)
 //carts
 app.use('/api/carts',passportCall("jwt"),handlePolicies(['USER']),cartsRouter)
 app.use("/chat",passportCall("jwt"), handlePolicies(['USER']), routerChat)
 app.use("/session",sessionsRouter) //ruta crea session
 app.use("/session",passportCall("jwt"), sessionsViewsRouter) //ruta crea session
-
-
+app.use("/mockingproducts", routerMoking) 
+app.use(errorHandler)
 mongoose.set('strictQuery', false)
 try{
     await mongoose.connect(MONGO_CONNECT)

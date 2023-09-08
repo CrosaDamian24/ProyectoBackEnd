@@ -7,13 +7,15 @@ export const getCartByIdController = async (req, res) => {
     const id = req.params.id;
 
     const result = await CartService.getByIdPopulate(id);
+   
     // const result = await cartModel.findById(id).populate("products.product").lean().exec();
+   
     if (result === null) {
-      return res.status(404).json({ status: "error", error: "Not found" });
+       res.status(404).json({ status: "error", error: "Not found" });
     }
     res.status(200).json({ status: "succes", payload: result });
   } catch (err) {
-    res.status(500).json({ status: "error", error: err.message });
+     res.status(500).json({ status: "error", error: err.message });
   }
   // con FileSystem
   // const cid = req.params.id
