@@ -5,6 +5,7 @@ import EErros from '../services/errors/enums.js'
 import { generateErrorInfo } from '../services/errors/info.js'
 
 
+
 export const  getAllProductsController = async (req, res) => {
     try{
       // const result = await getProducts(req,res)

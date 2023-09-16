@@ -20,6 +20,7 @@ import cookieParser from "cookie-parser";
 import config from './config/config.js';
 import messagesModel from "./models/messages.model.js";
 import errorHandler from './middleware/error.js'
+import logger from './logger.js'
 
 
 const app = express()
@@ -89,7 +90,8 @@ try{
     console.log(err.message)
 }
 
-const httpServer = app.listen(config.port, () => console.log('Server Up'))
+const httpServer = app.listen(config.port, () => logger.info('Server Up!'))
+//  console.log('Server Up')
 const io = new Server(httpServer)
 
 app.set('socketio',io)

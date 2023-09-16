@@ -1,13 +1,13 @@
 import EErros from "../services/errors/enums.js";
+import logger from '../logger.js'
 
 export default(error, req, res, next) => {
   
-     console.log("pasa2")
-console.log(error.code)
+
     switch (error.code) {
         case EErros.INVALID_TYPES_ERROR:
-             res.status(400).send({ status: 'error', error: error.cause})
- 
+            res.status(400).send({ status: 'error', error: error.cause})
+             logger.error({ status: 'error', error: error.cause})
             break;
         default:
             res.send({ status: 'error', error:'Unhandled error' })
