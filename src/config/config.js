@@ -18,7 +18,10 @@ export default {
   //  dbname: process.env.MONGO_DBNAME,
   connect: process.env.MONGO_CONNECT,
   persistence: persistencia,
+  nodemailer_user: process.env.NODEMAILER_USER,
+  nodemailer_pass: process.env.NODEMAILER_PASS
   //  process.env.PERSISTANCE
   //
   //
+
 };

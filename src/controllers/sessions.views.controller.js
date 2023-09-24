@@ -7,6 +7,13 @@ export const getLogin = (req, res) => {
     res.render('sessions/login')
 }
 
+export const getRestablecer = (req, res) => {
+    res.render('sessions/restablecer')
+}
+
+
+
+
 export const getCurrent = (req, res) => {
    
 

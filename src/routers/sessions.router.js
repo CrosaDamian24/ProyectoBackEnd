@@ -7,7 +7,8 @@ import { register,
         getLogout,
         getGithubcallback ,
         getGithub,
-        getCurrent} from "../controllers/sessions.controller.js";
+        getCurrent,
+        forgetPassword} from "../controllers/sessions.controller.js";
 // 
 import { passportCall  } from "../middleware/middleware.js";
 
@@ -41,5 +42,8 @@ router.get('/githubcallback',
 
 // datos cliente
 router.get("/current", getCurrent) 
+
+//Restablecer contraseña
+router.post('/forget-password',forgetPassword)
 
 export default router 

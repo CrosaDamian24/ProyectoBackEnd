@@ -1,0 +1,15 @@
+<h1>Restablecer contraseña</h1>
+{{!-- formulario redirige a la ruta post session/register del router, donde esta la logica   --}}
+{{!-- post se puede por html, delete solo por js --}}
+<form action="/session/forget-password" method="post"> 
+
+
+    Email: <input type="text" name="email"><br>
+
+    <br>
+
+    <input type="submit" value="Restablecer contraseña">
+     <a href="/session/login">Login</a>|
+     <a href="/session/register">Register</a>
+
+</form>

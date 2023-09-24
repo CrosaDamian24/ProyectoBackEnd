@@ -5,11 +5,13 @@ import { Product } from '../dao/product.factory.js'
 import { Cart } from '../dao/cart.factory.js'
 import TicketDAO from '../dao/ticket.mongo.dao.js'
 import UserDAO from '../dao/user.mongo.dao.js'
+import UserPasswordDAO from '../dao/user-password.mongo.dao.js'
 
 import ProductRepository from '../repositories/product.repository.js'
 import CartRepository from '../repositories/cart.repository.js'
 import TicketRepository from '../repositories/ticket.repository.js'
 import UserRepository from '../repositories/user.repository.js'
+import UserPasswordRepository from '../repositories/user-password.repositiry.js'
 
 
 
@@ -17,3 +19,4 @@ export const ProductService = new ProductRepository(new Product())
 export const CartService = new CartRepository(new Cart() )
 export const TicketService = new TicketRepository(new TicketDAO() )
 export const UserService = new UserRepository(new UserDAO() )
+export const UserPassworService = new UserPasswordRepository(new UserPasswordDAO())

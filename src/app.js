@@ -21,6 +21,8 @@ import config from './config/config.js';
 import messagesModel from "./models/messages.model.js";
 import errorHandler from './middleware/error.js'
 import logger from './logger.js'
+import loggerRouter from './routers/logger.router.js'
+import cors from 'cors'
 
 
 const app = express()
@@ -51,6 +53,7 @@ app.get('/',(req,res) => res.render('sessions/login'))
 const MONGO_CONNECT = config.connect
 
 
+
 // MIDLEWARE CREA SESSION Y GUARDA EN DB MONGO
 app.use(session({ //SESSION ES UN OBJETO
     // store: MongoStore.create({ //ALMACENA EN MONGO
@@ -66,8 +69,11 @@ app.use(session({ //SESSION ES UN OBJETO
 
 // passport
 initializePassport()
+
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(cors())
+
 
 
 
@@ -78,8 +84,9 @@ app.use('/api/products',passportCall("jwt"),productsRouter)
 app.use('/api/carts',passportCall("jwt"),handlePolicies(['USER']),cartsRouter)
 app.use("/chat",passportCall("jwt"), handlePolicies(['USER']), routerChat)
 app.use("/session",sessionsRouter) //ruta crea session
-app.use("/session",passportCall("jwt"), sessionsViewsRouter) //ruta crea session
+app.use("/session", sessionsViewsRouter) //ruta crea session
 app.use("/mockingproducts", routerMoking) 
+app.use("/loggerTest", loggerRouter)
 app.use(errorHandler)
 mongoose.set('strictQuery', false)
 try{
