@@ -8,7 +8,9 @@ import { register,
         getGithubcallback ,
         getGithub,
         getCurrent,
-        forgetPassword} from "../controllers/sessions.controller.js";
+        forgetPassword,
+        verifyToken,
+        restablecerContra} from "../controllers/sessions.controller.js";
 // 
 import { passportCall  } from "../middleware/middleware.js";
 
@@ -45,5 +47,11 @@ router.get("/current", getCurrent)
 
 //Restablecer contraseña
 router.post('/forget-password',forgetPassword)
+
+//verificar token
+router.get('/verify-token/:token',verifyToken)
+
+//restablecer contraseña
+router.post("/restablecer-contra/:user", restablecerContra )
 
 export default router 

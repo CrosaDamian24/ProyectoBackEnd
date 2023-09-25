@@ -46,9 +46,9 @@ const initializePassport = () => {
                 return done(null, false)
                 
             }
-
+            console.log(user)
             if (!isValidPassword(user, password)) {
-            
+            // console.log('pasa')
             return done(null, false)}
             const token = generateToken(user)
             // console.log(token)

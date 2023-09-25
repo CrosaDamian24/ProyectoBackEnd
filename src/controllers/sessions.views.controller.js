@@ -11,6 +11,9 @@ export const getRestablecer = (req, res) => {
     res.render('sessions/restablecer')
 }
 
+export const getVerificarToken = (req, res) => {
+    res.render('sessions/verify-token/:token')
+}
 
 
 

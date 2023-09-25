@@ -1,0 +1,11 @@
+<h2>Crea una nueva contraseña</h2>
+ <form class="w-25 " action="/session/restablecer-contra/{{user}}" method="post">  
+        <div class="mb-3">
+            <label for="new-password" class="form-label">Nueva contraseña</label>
+            <input type="text" name="newPassword" class="form-control" id="restablecer">
+        </div>
+
+ <button type="submit" >Cambiar contraseña</button>
+   <a href="/session/login">Login</a> |
+     <a href="/session/register">Register</a>
+  </form>
