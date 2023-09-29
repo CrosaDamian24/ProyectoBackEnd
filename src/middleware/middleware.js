@@ -16,11 +16,12 @@ export const passportCall = strategy => {
 
 export const handlePolicies = policies => (req, res, next) => {
     const user = req.user.user || null
-    
-    if (policies.includes('ADMIN')) {
-        if (user.role !== 'admin') {
+
+
+    if (policies.includes('ADMIN' ||'PREMIUM' )) {
+        if (user.role !== 'admin' && user.role !== 'premium') {
             return res.status(403).render('errors/base', {
-                error: 'Need to be an ADMIN'
+                error: 'Need to be an ADMIN or PREMIUM'
             })
         }
     }
@@ -31,5 +32,7 @@ export const handlePolicies = policies => (req, res, next) => {
             })
         }
     }
+
+
     return next()
 }

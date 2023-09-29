@@ -18,12 +18,12 @@ router.get("/", getAllProductsController);
 router.get("/:id",getProductByIdController);
 
 //AGREGO PRODUCTOS
-router.post("/",handlePolicies(['ADMIN']),  createProductController);
+router.post("/",handlePolicies(['ADMIN'||'PREMIUM']),  createProductController);
 
 //ACTUALIZAR
 router.put("/:id",handlePolicies(['ADMIN']),updateProductController);
 
 //BORRAR POR ID
-router.delete("/:id",handlePolicies(['ADMIN']),deleteProductController);
+router.delete("/:id",handlePolicies(['ADMIN'||'PREMIUM']),deleteProductController);
 
 export default router;
