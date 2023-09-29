@@ -74,7 +74,7 @@ export const createProductController = async (req, res, next) => {
     if (req.user.user.role == "premium") {
       //si usuario premium crea el producto, se gusrda su email en el campo owner
       product.owner = req.user.user.email;
-      console.log(product.owner);
+
     }
 
     if (
@@ -152,6 +152,15 @@ export const updateProductController = async (req, res) => {
   try {
     const id = req.params.id;
     const data = req.body;
+     // busco los datos del poducto
+     const producto = await ProductService.getById(id);
+
+     if (req.user.user.role == "premium") {
+       if (producto.owner != req.user.user.email) {
+         return res.status(401).json({ status: "error", error: "Unauthorized" });
+       }
+     }
+
     const result = await ProductService.update(id, data);
     if (result === null) {
       return res.status(404).json({ status: "error", error: "Not found" });
@@ -184,27 +193,20 @@ export const deleteProductController = async (req, res) => {
     // busco los datos del poducto
     const producto = await ProductService.getById(id);
 
-    // const borra = 1;
     if (req.user.user.role == "premium") {
       if (producto.owner != req.user.user.email) {
-      //   console.log("puede borrar siendo premium");
-      // } else {
-        return  res.status(401).json({ status : 'error', error: 'Unauthorized'})
-        // borra = 0;
-        // console.log("NO PUDE borrar");
+        return res.status(401).json({ status: "error", error: "Unauthorized" });
       }
     }
     // const result = await productModel.findByIdAndDelete(id)
 
-    // if (borra == 1) {
-      // console.log("borra")
-      const result = await ProductService.delete(id);
-      if (result === null) {
-        return res.status(404).json({ status: "error", error: "Not found" });
-      }
-      const products = await ProductService.getAll();
-      req.app.get("socketio").emit("updateProducts", products);
-      res.status(200).json({ status: "succes", payload: result });
+    const result = await ProductService.delete(id);
+    if (result === null) {
+      return res.status(404).json({ status: "error", error: "Not found" });
+    }
+    const products = await ProductService.getAll();
+    req.app.get("socketio").emit("updateProducts", products);
+    res.status(200).json({ status: "succes", payload: result });
     // }
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
