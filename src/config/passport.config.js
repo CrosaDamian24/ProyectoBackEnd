@@ -1,10 +1,9 @@
 import passport from "passport"
 import local from 'passport-local'
-import UserModel from '../models/user.model.js'
 import { createHash, isValidPassword , extractCookie, JWT_PRIVATE_KEY, generateToken} from '../utils.js'
 import GitHubStrategy from 'passport-github2'
 import passport_jwt from "passport-jwt"
-import cartModel  from "../models/cart.model.js"
+import { UserService, CartService } from "../services/index.js"
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
@@ -18,18 +17,18 @@ const initializePassport = () => {
     }, async(req, username, password, done) => {
         const { first_name, last_name, email, age, role } = req.body
         try {
-            const user = await UserModel.findOne({ email: username })
+            const user = await UserService.getOne({ email: username })
             if (user) {
                 console.log('User already exists')
                 return done(null, false)
             }
-            const cartForNewUser= await cartModel.create({}) //creamos un carrito
+            const cartForNewUser= await CartService.create({}) //creamos un carrito
             const newUser = {
                 first_name, last_name, email, age, password: createHash(password),role                ,
                 cart: cartForNewUser._id, //al nuevo usuario le asignamos el carrito que armamos mas arriba
                 // role: (email === "adminCoder@coder.com")? "admin" : "user"
             }
-            const result = await UserModel.create(newUser)
+            const result = await UserService.create(newUser)
             return done(null, result)
         } catch(err) {
             return done('error al obtener el user')
@@ -40,7 +39,7 @@ const initializePassport = () => {
         usernameField: 'email'
     }, async(username, password, done) => {
         try {
-            const user = await UserModel.findOne({ email: username })
+            const user = await UserService.getOne({ email: username })
             if (!user ) {
                
                 return done(null, false)
@@ -70,14 +69,14 @@ const initializePassport = () => {
     }, async(accessToken, refreshToken, profile, done) => {
         // console.log(profile)
         try {
-            const user = await UserModel.findOne({ email: profile._json.email })
+            const user = await UserService.getOne({ email: profile._json.email })
             if (user){
             const token = generateToken(user)
             user.token = token
             return done(null, user)}
             else{
-                const cartForNewUser= await cartModel.create({})
-                const newUser = await UserModel.create({
+                const cartForNewUser= await CartService.create({})
+                const newUser = await UserService.create({
                     first_name: profile._json.name,
                     email: profile._json.email,
                     cart: cartForNewUser._id,
@@ -106,7 +105,7 @@ const initializePassport = () => {
     })
 
     passport.deserializeUser(async (id, done) => {
-        const user = await UserModel.findById(id)
+        const user = await UserService.getById(id)
         done(null, user)
     })
 
