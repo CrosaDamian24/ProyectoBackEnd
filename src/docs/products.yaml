@@ -1,0 +1,239 @@
+paths:
+  /api/products/:
+    get:
+      tags: 
+        - Products
+      summary: Lista todos los productos
+      responses:
+        '200':
+          description: Succes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+    post:
+      tags: 
+          - Products
+      security:
+          - bearerAuth: []
+      summary: Creación de nuevo producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product1'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product1'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+  /api/products/{productId}:
+    get:
+      tags: 
+        - Products
+      summary: Buscar producto por ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          description: Not Found
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+        '500':
+          description: Error
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+    put:
+      tags: 
+        - Products
+      summary: Actualiza producto por ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/Product1'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    delete:
+        tags: 
+          - Products
+        summary: Borrado de producto por ID
+        parameters:
+          - name: productId
+            in: path
+            required: true
+            description: ID del producto
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Product'
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+          '404':
+            description: Not Found
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        code:
+          type: string
+        status:
+          type: boolean
+        stock:
+          type: number
+        category:
+          type: string
+        thumbnail:
+          type: [String]
+        owner :
+          type: string
+       
+      required:
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category
+    Product1:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        code:
+          type: string
+        status:
+          type: boolean
+        stock:
+          type: number
+        category:
+          type: string
+        thumbnail:
+          type: [String]
+       
+      required:
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category
+        
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

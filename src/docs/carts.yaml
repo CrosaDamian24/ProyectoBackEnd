@@ -1,0 +1,308 @@
+paths:
+  /api/carts/:
+    post:
+          tags: 
+            - Carts
+          summary: Creacion de un nuevo carrito
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema: 
+                    $ref: '#/components/schemas/Carts'
+          responses:
+            '200':
+              description: Success
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/CartsSucces'
+            '500':
+              description: Error
+              content:
+                application/json:
+                  schema: 
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      error:
+                        type: string
+  /api/carts/{cartId}:
+      get:
+        tags: 
+          - Carts
+        summary: Obtiene el carrito del cliente
+        parameters:
+          - name: cartId
+            in: path
+            required: true
+            description: ID del carrito del cliente
+            schema:
+              type: string
+        responses:
+          '200':
+              description: Success
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/CartCliente'
+          '401':
+              description: Unauthorized
+              content:
+                application/json:
+                  schema: 
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      error:
+                        type: string
+          '404':
+              description: Not Found
+              content:
+                application/json:
+                  schema: 
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      error:
+                        type: string
+          '500':
+              description: Error
+              content:
+                application/json:
+                  schema: 
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      error:
+                        type: string
+      delete: 
+        tags:
+          - Carts
+        summary: Elimina los productos del carrito
+        parameters:
+          - name: cartId
+            in: path
+            required: true
+            description: ID del carrito del cliente
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Operación exitosa
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/CartsSucces'
+          '500':
+            description: Error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties: 
+                    status: 
+                      type: string
+                    error:
+                      type: string
+  /api/carts/{cartId}/product/{productId}:
+      post: 
+        tags: 
+          - Carts
+        summary: Agrega productos al carrito del cliente
+        parameters:
+          - name: cartId
+            in: path
+            required: true
+            description: ID del carrito del cliente
+            schema:
+              type: string
+          - name: productId
+            in: path
+            required: true
+            description: ID del producto a agregar
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CartCliente'
+          '500':
+            description: Error
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+      put:
+        tags: 
+          - Carts
+        summary: Edita cantidades de productos dentro del carrito
+        parameters:
+          - name: cartId
+            in: path
+            required: true
+            description: ID del carrito del cliente
+            schema:
+              type: string
+          - name: productId
+            in: path
+            required: true
+            description: ID del producto a agregar
+            schema:
+              type: string
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  quantity:
+                    type: number
+                    required: true
+        responses:
+          '200':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CartCliente'
+          '500':
+            description: Error
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+      delete: 
+        tags:
+          - Carts
+        summary: Elimina producto seleccionado del carrito
+        parameters:
+          - name: cartId
+            in: path
+            required: true
+            description: ID del carrito del cliente
+            schema:
+              type: string
+          - name: productId
+            in: path
+            required: true
+            description: ID del producto a agregar
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Success
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CartCliente'
+          '500':
+            description: Error
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+  /api/carts/{cartId}/purcharse:
+    post:
+      tags:
+        - Carts
+      summary: Genera ticket de compra
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code: 
+                    type: string
+                  amount:
+                    type: string 
+                  purcharser:
+                    type: string
+                  purchase_datetime:
+                    type: data
+        '500':
+            description: Error
+            content:
+              application/json:
+                schema: 
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    error:
+                      type: string
+              
+
+components:
+  schemas:
+    Carts:
+          type: object
+          properties:
+            Products:
+              type: array
+    CartsSucces:
+          type: object
+          properties:
+            Products:
+              type: array
+            _id: 
+              type: ObjectId
+              description: Id autogenerado por MongoDB 
+    CartCliente:
+          type: object
+          properties:
+            _id: 
+              type: ObjectId
+              description: Id autogenerado por MongoDB 
+            Products:
+              type: array
+              items:
+                type: object
+                properties:
+                  producto:
+                    $ref: '#/components/schemas/Product'
+                  quantity:
+                    type: number
+              # type: object
+           
+
+

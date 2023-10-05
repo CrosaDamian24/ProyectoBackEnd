@@ -229,7 +229,7 @@ export const createTicketController = async (req, res) => {
           //  console.log(code)
           await TicketService.create(newTicket);
         }
-        res.status(200).json({ status: "success", SinComprar: cart.products });
+        res.status(200).json({ status: "success", SinComprar: cart.products});
       })
       .catch((err) => {
         // hubo alguna respuesta. Informo.

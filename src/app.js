@@ -24,12 +24,31 @@ import logger from './logger.js'
 import loggerRouter from './routers/logger.router.js'
 import cors from 'cors'
 
+import swaggerUiExpress from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+
+export const swaggerOptions = {
+    definition: {
+        openapi: '3.1.0',
+        info: {
+            title: 'Ecommerce para Proyecto Final de Coderhouse',
+            version: '1.0.0',
+        }
+    },
+    apis: [
+        `./docs/**/*.yaml`,
+    ],
+};
+const specs = swaggerJsdoc(swaggerOptions);
+
+
 
 const app = express()
 
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 //cofiguracion del motor e plantillas handlebars
 // app.use(express.static('./public'))
 app.use(express.static(__dirname + "/public"))
@@ -117,6 +136,7 @@ io.on("connection",socket => {
         })
 
 })
+
 
 // socketServer.on("connection", socket => {
 //     console.log("New client connected")
