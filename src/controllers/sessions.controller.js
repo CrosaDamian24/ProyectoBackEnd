@@ -1,12 +1,12 @@
 import passport from "passport";
-import { JWT_COOKIE_NAME, generateRandomString, createHash, isValidPassword} from '../utils.js'
+import {  generateRandomString, createHash, isValidPassword} from '../utils.js'
 import { signedCookie } from "cookie-parser";
 import UserDTO from "../dto/user.js";
 import {  UserPassworService, UserService } from "../services/index.js";
 import config from "../config/config.js";
 import nodemailer from "nodemailer"
 
-
+const JWT_COOKIE_NAME = config.COOKIENAMEJWT
 export const register = async(req, res) => {
     res.redirect('/session/login')
 } 
@@ -74,7 +74,7 @@ export const forgetPassword =  async (req, res) => {
         const mailerConfig = {
             // uri:wtimeoutMS,
             service : 'gmail',
-            auth : { user: config.nodemailer_user, pass: config.nodemailer_pass}
+            auth : { user: config.NODEMAILER_USER, pass: config.NODEMAILER_PASS}
         }
 
         let transporter = nodemailer.createTransport(mailerConfig)

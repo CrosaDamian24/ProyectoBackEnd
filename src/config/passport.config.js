@@ -1,13 +1,17 @@
 import passport from "passport"
 import local from 'passport-local'
-import { createHash, isValidPassword , extractCookie, JWT_PRIVATE_KEY, generateToken} from '../utils.js'
+import { createHash, isValidPassword , extractCookie,  generateToken} from '../utils.js'
 import GitHubStrategy from 'passport-github2'
 import passport_jwt from "passport-jwt"
 import { UserService, CartService } from "../services/index.js"
+import config from "./config.js"
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
 const ExtractJWT = passport_jwt.ExtractJwt //extrae token de cookie
+
+const JWT_PRIVATE_KEY = config.KEYPRIVATEJWT; 
+
 
 const initializePassport = () => {
 

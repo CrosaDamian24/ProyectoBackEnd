@@ -4,7 +4,7 @@ import config from "../config/config.js";
 
 //variables de entorno
 const PORT = config.port
-const COOKIE_NAME = config.cookieNameJWT
+const COOKIE_NAME = config.COOKIENAMEJWT
 
 const expect = chai.expect;
 const requester = supertest(`http://localhost:${PORT}`);

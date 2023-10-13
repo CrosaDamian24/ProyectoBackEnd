@@ -69,7 +69,7 @@ app.get('/',(req,res) => res.render('sessions/login'))
 
 
 
-const MONGO_CONNECT = config.connect
+const MONGO_CONNECT = config.CONNECT
 
 
 
@@ -100,7 +100,7 @@ app.use('/views',passportCall("jwt"), viewsRouter)
 app.use('/views',passportCall("jwt"), handlePolicies(['USER']), cartsViewsRouter)
 app.use('/api/products',passportCall("jwt"),productsRouter)
 //carts
-app.use('/api/carts',passportCall("jwt"),handlePolicies(['USER']),cartsRouter)
+app.use('/api/carts',passportCall("jwt"),handlePolicies(['USER','PREMIUM']),cartsRouter)
 app.use("/chat",passportCall("jwt"), handlePolicies(['USER']), routerChat)
 app.use("/session",sessionsRouter) //ruta crea session
 app.use("/session", sessionsViewsRouter) //ruta crea session
@@ -116,7 +116,7 @@ try{
     console.log(err.message)
 }
 
-const httpServer = app.listen(config.port, () => logger.info('Server Up!'))
+const httpServer = app.listen(config.PORT, () => logger.info('Server Up!'))
 //  console.log('Server Up')
 const io = new Server(httpServer)
 

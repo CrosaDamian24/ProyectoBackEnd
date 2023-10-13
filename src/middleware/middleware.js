@@ -17,22 +17,7 @@ export const passportCall = strategy => {
 export const handlePolicies = policies => (req, res, next) => {
     const user = req.user.user || null
 
-
-    if (policies.includes('ADMIN' ||'PREMIUM' )) {
-        if (user.role !== 'admin' && user.role !== 'premium') {
-            return res.status(403).render('errors/base', {
-                error: 'Need to be an ADMIN or PREMIUM'
-            })
-        }
-    }
-    if (policies.includes('USER')) {
-        if (user.role !== 'user') {
-            return res.status(403).render('errors/base', {
-                error: 'Need to be an user'
-            })
-        }
-    }
-
-
+    if (!policies.includes(user.role.toUpperCase())) return res.status(401).json({ status: "error", error: "Acceso denegado" })
     return next()
 }
+

@@ -5,11 +5,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import jwt from "jsonwebtoken";
 import { fakerES_MX as faker } from "@faker-js/faker";
+import config from "./config/config.js";
 
 export default __dirname;
 
-export const JWT_PRIVATE_KEY = "secret"; //clave y nombres en constantes, para no harcodearlas repetidamente
-export const JWT_COOKIE_NAME = "CookieToken";
+// export const JWT_PRIVATE_KEY = "secret"; //clave y nombres en constantes, para no harcodearlas repetidamente
+// export const JWT_COOKIE_NAME = "CookieToken";
+
+const JWT_PRIVATE_KEY = config.KEYPRIVATEJWT; //clave y nombres en constantes, para no harcodearlas repetidamente
+const JWT_COOKIE_NAME = config.COOKIENAMEJWT;
 
 // ENCRIPTA LA CONTRASEÑA
 export const createHash = (password) => {

@@ -4,10 +4,10 @@ import { faker } from "@faker-js/faker";
 import config from "../config/config.js";
 
 //variables de entorno
-const PORT = config.port;
+const PORT = config.PORT;
 const ADMIN_EMAIL = config.ADMIN_EMAIL;
 const ADMIN_PASS = config.ADMIN_PASS;
-const COOKIE_NAME = config.cookieNameJWT;
+const COOKIE_NAME = config.COOKIENAMEJWT;
 
 
 const expect = chai.expect;

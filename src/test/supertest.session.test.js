@@ -5,7 +5,7 @@ import { faker } from "@faker-js/faker";
 
 
 const PORT = config.port;
-const COOKIE_NAME = config.cookieNameJWT;
+const COOKIE_NAME = config.COOKIENAMEJWT;
 
 const expect = chai.expect;
 const requester = supertest(`http://localhost:${PORT}`);

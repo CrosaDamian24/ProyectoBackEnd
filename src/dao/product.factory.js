@@ -2,7 +2,7 @@ import config from "../config/config.js";
 
 export let Product
 
-switch (config.persistence) {
+switch (config.PERSISTENCE) {
     case 'MONGO':
         const { default: ProductDAO } = await import('../dao/product.mongo.dao.js')
         Product = ProductDAO

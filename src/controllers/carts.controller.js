@@ -7,15 +7,15 @@ export const getCartByIdController = async (req, res) => {
     const id = req.params.id;
 
     const result = await CartService.getByIdPopulate(id);
-   
+
     // const result = await cartModel.findById(id).populate("products.product").lean().exec();
-   
+
     if (result === null) {
-       res.status(404).json({ status: "error", error: "Not found" });
+      res.status(404).json({ status: "error", error: "Not found" });
     }
     res.status(200).json({ status: "succes", payload: result });
   } catch (err) {
-     res.status(500).json({ status: "error", error: err.message });
+    res.status(500).json({ status: "error", error: err.message });
   }
   // con FileSystem
   // const cid = req.params.id
@@ -53,27 +53,33 @@ export const addProductInCart = async (req, res) => {
     const carrito = await CartService.getById(cid);
     // const carrito = await cartModel.findById(cid);
 
-    let acum = 0;
-    // carrito.products.map(function(dato){
-    carrito.products.map((dato) => {
-      if (dato.product == pid) {
-        acum++;
-        dato.quantity++;
+    if (req.user.user.cart !== cid) {
+      res
+        .status(403)
+        .json({ status: "error", error: "El carrito no pertenece al usuario" });
+    } else {
+      let acum = 0;
+      // carrito.products.map(function(dato){
+      carrito.products.map((dato) => {
+        if (dato.product == pid) {
+          acum++;
+          dato.quantity++;
+        }
+      });
+
+      if (acum === 0) {
+        carrito.products.push({ product: pid, quantity: 1 });
       }
-    });
 
-    if (acum === 0) {
-      carrito.products.push({ product: pid, quantity: 1 });
+      await CartService.updateOne({ _id: cid }, carrito);
+
+      // await cartModel.updateOne({ _id: cid }, carrito);
+      //
+      // const result = await cartModel.findById(cid);
+      const result = await CartService.getByIdPopulate(cid);
+
+      res.status(200).json({ status: "succes", payload: result });
     }
-
-    await CartService.updateOne({ _id: cid }, carrito);
-
-    // await cartModel.updateOne({ _id: cid }, carrito);
-    //
-    // const result = await cartModel.findById(cid);
-    const result = await CartService.getByIdPopulate(cid);
-
-    res.status(200).json({ status: "succes", payload: result });
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
   }
@@ -105,13 +111,13 @@ export const deleteProductInCartController = async (req, res) => {
     // const cart= await cartModel.findById(cid)
     const cart = await CartService.getById(cid);
 
-    const indice = cart.products.findIndex((prod) => prod.product.toString() === pid);
+    const indice = cart.products.findIndex(
+      (prod) => prod.product.toString() === pid
+    );
 
-
-    if(indice>=0)
-    {
+    if (indice >= 0) {
       cart.products.splice(indice, 1);
-  
+
       await CartService.updateOne({ _id: cid }, cart);
     }
     // await cartModel.updateOne({_id: cid}, cart)
@@ -193,11 +199,10 @@ export const createTicketController = async (req, res) => {
         const indice = await cart.products.findIndex(
           (prod) => prod.product.toString() === listProduct._id.toString()
         );
-   
-        if(indice>=0){
 
+        if (indice >= 0) {
           await cart.products.splice(indice, 1);
-  
+
           await CartService.updateOne({ _id: cart._id.toString() }, cart);
         }
       }
@@ -229,7 +234,7 @@ export const createTicketController = async (req, res) => {
           //  console.log(code)
           await TicketService.create(newTicket);
         }
-        res.status(200).json({ status: "success", SinComprar: cart.products});
+        res.status(200).json({ status: "success", SinComprar: cart.products });
       })
       .catch((err) => {
         // hubo alguna respuesta. Informo.
