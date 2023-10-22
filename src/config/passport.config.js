@@ -5,6 +5,7 @@ import GitHubStrategy from 'passport-github2'
 import passport_jwt from "passport-jwt"
 import { UserService, CartService } from "../services/index.js"
 import config from "./config.js"
+import moment from "moment/moment.js"
 
 const LocalStrategy = local.Strategy
 const JWTStrategy = passport_jwt.Strategy
@@ -53,12 +54,17 @@ const initializePassport = () => {
             if (!isValidPassword(user, password)) {
             // console.log('pasa')
             return done(null, false)}
+            else{
+      
+            await UserService.updateUser(user._id,{last_connection:moment().format("DD/MM/YYYY HH:mm:ss")})
             const token = generateToken(user)
             // console.log(token)
             user.token = token
+
+         
             
              return done(null, user)
-            
+        }
 
         } catch(err) {
 

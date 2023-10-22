@@ -50,35 +50,51 @@ export const addProductInCart = async (req, res) => {
     const cid = req.params.cid;
     const pid = req.params.pid;
 
-    const carrito = await CartService.getById(cid);
     // const carrito = await cartModel.findById(cid);
 
     if (req.user.user.cart !== cid) {
       res
-        .status(403)
+        .status(401)
         .json({ status: "error", error: "El carrito no pertenece al usuario" });
     } else {
-      let acum = 0;
-      // carrito.products.map(function(dato){
-      carrito.products.map((dato) => {
-        if (dato.product == pid) {
-          acum++;
-          dato.quantity++;
-        }
-      });
+      const product = await ProductService.getById(pid.toString());
 
-      if (acum === 0) {
-        carrito.products.push({ product: pid, quantity: 1 });
+      if (product === null) {
+        res.status(403).json({
+          status: "error",
+          error: "El producto no se existe",
+        });
+      } else if (product.owner === req.user.user.email ) {
+        res
+        .status(401)
+        .json({ status: "error", error: "El producto le pertenece, no puede agregarlo a su carrito" });
+
       }
+      
+      else{
+        const carrito = await CartService.getById(cid);
+        let acum = 0;
+        // carrito.products.map(function(dato){
+        carrito.products.map((dato) => {
+          if (dato.product == pid) {
+            acum++;
+            dato.quantity++;
+          }
+        });
 
-      await CartService.updateOne({ _id: cid }, carrito);
+        if (acum === 0) {
+          carrito.products.push({ product: pid, quantity: 1 });
+        }
 
-      // await cartModel.updateOne({ _id: cid }, carrito);
-      //
-      // const result = await cartModel.findById(cid);
-      const result = await CartService.getByIdPopulate(cid);
+        await CartService.updateOne({ _id: cid }, carrito);
 
-      res.status(200).json({ status: "succes", payload: result });
+        // await cartModel.updateOne({ _id: cid }, carrito);
+        //
+        // const result = await cartModel.findById(cid);
+        const result = await CartService.getByIdPopulate(cid);
+
+        res.status(200).json({ status: "succes", payload: result });
+      }
     }
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
@@ -111,21 +127,44 @@ export const deleteProductInCartController = async (req, res) => {
     // const cart= await cartModel.findById(cid)
     const cart = await CartService.getById(cid);
 
+    if (req.user.user.cart !== cid) {
+      res
+        .status(401)
+        .json({ status: "error", error: "El carrito no pertenece al usuario" });
+    } else {
+      const product = await ProductService.getById(pid.toString());
+      if (product === null) {
+        res.status(403).json({
+          status: "error",
+          error: "El producto no se existe",
+        });
+      } else {
+
     const indice = cart.products.findIndex(
       (prod) => prod.product.toString() === pid
     );
-
+    
     if (indice >= 0) {
       cart.products.splice(indice, 1);
 
       await CartService.updateOne({ _id: cid }, cart);
-    }
-    // await cartModel.updateOne({_id: cid}, cart)
+          // await cartModel.updateOne({_id: cid}, cart)
 
     // const result= await cartModel.findById(cid).populate("products.product")
     const result = await CartService.getByIdPopulate(cid);
-
     res.status(200).json({ status: "success", payload: result });
+    }else{
+      res.status(400).json({
+        status: "error",
+        error: "El producto no se encuentra en el carrito",
+      });
+      
+    }
+
+
+
+   
+  }}
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
   }
@@ -153,23 +192,39 @@ export const updateProductInCart = async (req, res) => {
     const pid = req.params.pid;
     const data = req.body;
 
-    //  const cart = await cartModel.findById(cid);
-    const cart = await CartService.getById(cid);
+    if (req.user.user.cart !== cid) {
+      res
+        .status(401)
+        .json({ status: "error", error: "El carrito no pertenece al usuario" });
+    } else {
+      //  const cart = await cartModel.findById(cid);
+      const cart = await CartService.getById(cid);
+      const array = cart.products.filter(
+        (prod) => prod.product.toString() === pid.toString()
+      );
 
-    const valor = data.quantity;
+      if (array.length === 0) {
+        res.status(403).json({
+          status: "error",
+          error: "El producto no se encuentra en el carrito",
+        });
+      } else {
+        const valor = data.quantity;
 
-    cart.products.map((item) => {
-      if (item.product == pid) {
-        item.quantity = valor;
+        cart.products.map((item) => {
+          if (item.product == pid) {
+            item.quantity = valor;
+          }
+        });
+
+        //  await cartModel.updateOne({ _id: cid }, cart);
+        await CartService.updateOne({ _id: cid }, cart);
+        // const result= await cartModel.findById(cid).populate("products.product")
+        const result = await CartService.getByIdPopulate(cid);
+
+        res.status(200).json({ status: "success", payload: result });
       }
-    });
-
-    //  await cartModel.updateOne({ _id: cid }, cart);
-    await CartService.updateOne({ _id: cid }, cart);
-    // const result= await cartModel.findById(cid).populate("products.product")
-    const result = await CartService.getByIdPopulate(cid);
-
-    res.status(200).json({ status: "success", payload: result });
+    }
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
   }

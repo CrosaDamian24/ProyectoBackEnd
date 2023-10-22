@@ -26,6 +26,7 @@ import cors from 'cors'
 
 import swaggerUiExpress from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import usersRouter from '../src/routers/users.router.js'
 
 export const swaggerOptions = {
     definition: {
@@ -106,6 +107,7 @@ app.use("/session",sessionsRouter) //ruta crea session
 app.use("/session", sessionsViewsRouter) //ruta crea session
 app.use("/mockingproducts", routerMoking) 
 app.use("/loggerTest", loggerRouter)
+app.use('/api/users' ,passportCall("jwt"), usersRouter)
 app.use(errorHandler)
 mongoose.set('strictQuery', false)
 try{

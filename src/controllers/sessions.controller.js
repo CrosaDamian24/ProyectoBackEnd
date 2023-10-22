@@ -5,6 +5,7 @@ import UserDTO from "../dto/user.js";
 import {  UserPassworService, UserService } from "../services/index.js";
 import config from "../config/config.js";
 import nodemailer from "nodemailer"
+import moment               from "moment/moment.js";
 
 const JWT_COOKIE_NAME = config.COOKIENAMEJWT
 export const register = async(req, res) => {
@@ -30,7 +31,10 @@ export const getFailLogin =  (req, res) => {
     res.send({ error: 'Failed!'})
 }
 
-export const getLogout = (req, res) => {
+export const getLogout = async (req, res) => {
+    console.log(req.user.user._id)
+    const user = await UserService.getOne({ _id: req.user.user._id })
+    await UserService.updateUser(req.user.user._id,{last_connection:moment().format("DD/MM/YYYY HH:mm:ss")})
     req.session.destroy(err => {
         // if(err) {
         //     console.log(err);

@@ -32,7 +32,7 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/sessio
 router.get('/failLogin',getFailLogin)
 
 // Cerrar Session
-router.get('/logout', getLogout)
+router.get('/logout', passportCall("jwt"),getLogout)
 
 
 router.get('/github',
