@@ -13,7 +13,8 @@ export const register = async(req, res) => {
 } 
 
 export const getFailRegister = (req, res) => {
-    res.send({ error: 'Faileed!'})
+    
+    res.send({ error: 'User already exists'})
 }
 
 export const login = async (req, res) => {

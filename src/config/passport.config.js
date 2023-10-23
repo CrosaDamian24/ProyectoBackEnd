@@ -24,8 +24,8 @@ const initializePassport = () => {
         try {
             const user = await UserService.getOne({ email: username })
             if (user) {
-                console.log('User already exists')
-                return done(null, false)
+                // console.log('User already exists')
+                return done(null,false)
             }
             const cartForNewUser= await CartService.create({}) //creamos un carrito
             const newUser = {

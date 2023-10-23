@@ -1,11 +1,11 @@
 import express from "express";
 import { Router } from "express";
-import { Cart } from "../dao/fsManagers/Cart.js";
 import { 
         updateRolUser
          } from '../controllers/users.controller.js'
 import { uploader } from "../middleware/multer.js";
-import { sendDocument } from "../controllers/users.controller.js";
+import { sendDocument, getAllUsersController} from "../controllers/users.controller.js";
+import { handlePolicies } from "../middleware/middleware.js";
 // con FileSystem
 // import { ProductManager } from '../dao/fsManagers/ProductManager.js'
 
@@ -25,5 +25,7 @@ router.put("/premium/:uid", updateRolUser)
 //Subo documentos de usuario
 router.put("/:uid/documents",uploader.fields([{name:"identificacion"},{name:"domicilio"},{name:"cuenta"}]), sendDocument)
 
+//TODOS los Usuarios
+router.get("/",handlePolicies(['ADMIN']), getAllUsersController);
 
 export default router;

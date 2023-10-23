@@ -1,4 +1,5 @@
 import { UserService } from "../services/index.js";
+import UserDTO from "../dto/user.js";
 
 export const updateRolUser = async (req, res) => {
   try {
@@ -106,3 +107,19 @@ export const sendDocument = async (req, res) => {
     res.status(500).json({ status: "error", error: err.message });
   }
 };
+export const getAllUsersController = async (req,res)=>{
+
+  if(!req.user) return res.status(401).json({status: "error", error: "Sesión no detectada, inicia sesión"})
+  const users = await UserService.getAll()
+// console.log(users)
+  // let results = new UserDTO(users)
+
+// const array = []
+
+ const usersDTO = users.map((user) => {
+  return new UserDTO(user)
+
+  });
+
+  res.status(200).json({status: "success", payload: usersDTO})
+}
