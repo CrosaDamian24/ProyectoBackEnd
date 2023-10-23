@@ -6,6 +6,7 @@ import { getAllProductsController,
          updateProductController,
          deleteProductController} from '../controllers/products.controller.js'
 import { handlePolicies } from "../middleware/middleware.js";
+import { uploader } from "../middleware/multer.js";
 
 const manager = new ProductManager("../products.json");
 
@@ -18,7 +19,7 @@ router.get("/", getAllProductsController);
 router.get("/:id",getProductByIdController);
 
 //AGREGO PRODUCTOS
-router.post("/",handlePolicies(['ADMIN','PREMIUM']),  createProductController);
+router.post("/",uploader.single('thummbnails'),handlePolicies(['ADMIN','PREMIUM']),  createProductController);
 
 //ACTUALIZAR
 router.put("/:id",handlePolicies(['ADMIN']),updateProductController);

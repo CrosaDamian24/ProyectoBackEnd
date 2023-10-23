@@ -70,12 +70,14 @@ export const getProductByIdController = async (req, res) => {
 export const createProductController = async (req, res, next) => {
   try {
     const product = req.body;
-
+    const senDocument = req.file;
+  
     if (req.user.user.role == "premium") {
       //si usuario premium crea el producto, se gusrda su email en el campo owner
       product.owner = req.user.user.email;
 
     }
+    product.thummbnails = req.file.fieldname
 
     if (
       !product.title ||

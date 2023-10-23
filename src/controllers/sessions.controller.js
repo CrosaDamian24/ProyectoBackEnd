@@ -32,7 +32,7 @@ export const getFailLogin =  (req, res) => {
 }
 
 export const getLogout = async (req, res) => {
-    console.log(req.user.user._id)
+
     const user = await UserService.getOne({ _id: req.user.user._id })
     await UserService.updateUser(req.user.user._id,{last_connection:moment().format("DD/MM/YYYY HH:mm:ss")})
     req.session.destroy(err => {

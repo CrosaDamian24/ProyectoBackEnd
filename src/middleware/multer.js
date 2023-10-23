@@ -7,13 +7,13 @@ const storage= multer.diskStorage({ // acá le digo que se grabe en disco de alm
     
     destination: function(req, file,cb){
                 // cb(null, __dirname + "/public/documents")  //acá le digo que se guarde en carpeta public
-                if(file.fieldname == "identificacion" || "domicilio" || "cuenta"){
+                if(file.fieldname === "identificacion" || file.fieldname === "domicilio" || file.fieldname === "cuenta"){
                     cb(null, __dirname + "/public/documents"); //acá le digo que se guarde en carpeta public
                 };
                 if(file.fieldname == "imageprofile"){
                     cb(null, __dirname + "/public/profiles");
                 };
-                if(file.fieldname == "imageproduct"){
+                if(file.fieldname == "thummbnails"){
                     cb(null, __dirname + "/public/products");
                 };
     },
