@@ -55,8 +55,8 @@ const initializePassport = () => {
             // console.log('pasa')
             return done(null, false)}
             else{
-      
-            await UserService.updateUser(user._id,{last_connection:moment().format("DD/MM/YYYY HH:mm:ss")})
+
+            await UserService.updateUser(user._id,{last_connection:new Date })
             const token = generateToken(user)
             // console.log(token)
             user.token = token

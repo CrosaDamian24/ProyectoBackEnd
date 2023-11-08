@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { passportCall  } from "../middleware/middleware.js";
 
 const router = Router()
 
@@ -20,6 +21,6 @@ router.get('/restablecer', getRestablecer)
 router.get('/verify-token', getVerificarToken)
 
 //Vista de current
-router.get('/views/current', getCurrent)
+router.get('/views/current', passportCall("jwt"),getCurrent)
 
 export default router 

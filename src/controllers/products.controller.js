@@ -2,6 +2,8 @@ import { ProductService } from "../services/index.js";
 import CustomError from "../services/errors/custom_error.js";
 import EErros from "../services/errors/enums.js";
 import { generateErrorInfo } from "../services/errors/info.js";
+import nodemailer from "nodemailer";
+import config from "../config/config.js";
 
 export const getAllProductsController = async (req, res) => {
   try {
@@ -193,22 +195,51 @@ export const deleteProductController = async (req, res) => {
     const id = req.params.id;
     // busco los datos del poducto
     const producto = await ProductService.getById(id);
+    if (producto) {
+      const nombre = producto.title;
+      const email = producto.owner;
 
-    if (req.user.user.role == "premium") {
-      if (producto.owner != req.user.user.email) {
-        return res.status(401).json({ status: "error", error: "Unauthorized" });
+      if (req.user.user.role == "premium") {
+        if (producto.owner != req.user.user.email) {
+          return res
+            .status(401)
+            .json({ status: "error", error: "Unauthorized" });
+        }
       }
-    }
-    // const result = await productModel.findByIdAndDelete(id)
+      // const result = await productModel.findByIdAndDelete(id)
 
-    const result = await ProductService.delete(id);
-    if (result === null) {
-      return res.status(404).json({ status: "error", error: "Not found" });
+      const result = await ProductService.delete(id);
+      if (result === null) {
+        return res.status(404).json({ status: "error", error: "Not found" });
+      }
+      // Envio el mail avisando al usuario premium dueño del producto que se elimino
+      if (email) {
+        const mailerConfig = {
+          // uri:wtimeoutMS,
+          service: "gmail",
+          auth: {
+            user: config.NODEMAILER_USER,
+            pass: config.NODEMAILER_PASS,
+          },
+        };
+        let transporter = nodemailer.createTransport(mailerConfig);
+        let message = {
+          from: config.NODEMAILER_USER,
+          to: email,
+          subject: "Producto Eliminado",
+          html: `<h1>Hola </h1> <hr/> Su producto ${nombre} ha sido eliminado del catalogo`,
+        };
+
+        await transporter.sendMail(message);
+      }
+      const products = await ProductService.getAll();
+      req.app.get("socketio").emit("updateProducts", products);
+      res.status(200).json({ status: "succes", payload: result });
+      // }
     }
-    const products = await ProductService.getAll();
-    req.app.get("socketio").emit("updateProducts", products);
-    res.status(200).json({ status: "succes", payload: result });
-    // }
+    return res
+      .status(200)
+      .json({ status: "error", error: "El producto no existe" });
   } catch (err) {
     res.status(500).json({ status: "error", error: err.message });
   }

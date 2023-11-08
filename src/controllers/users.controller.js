@@ -1,5 +1,8 @@
-import { UserService } from "../services/index.js";
+import { UserService, CartService } from "../services/index.js";
 import UserDTO from "../dto/user.js";
+import moment from "moment/moment.js";
+import nodemailer from "nodemailer";
+import config from "../config/config.js";
 
 export const updateRolUser = async (req, res) => {
   try {
@@ -107,19 +110,69 @@ export const sendDocument = async (req, res) => {
     res.status(500).json({ status: "error", error: err.message });
   }
 };
-export const getAllUsersController = async (req,res)=>{
-
-  if(!req.user) return res.status(401).json({status: "error", error: "Sesión no detectada, inicia sesión"})
-  const users = await UserService.getAll()
-// console.log(users)
+export const getAllUsersController = async (req, res) => {
+  const users = await UserService.getAll();
+  // console.log(users)
   // let results = new UserDTO(users)
 
-// const array = []
+  // const array = []
 
- const usersDTO = users.map((user) => {
-  return new UserDTO(user)
-
+  const usersDTO = users.map((user) => {
+    return new UserDTO(user);
   });
 
-  res.status(200).json({status: "success", payload: usersDTO})
-}
+  res.status(200).json({ status: "success", payload: usersDTO });
+};
+
+export const deleteUsersController = async (req, res) => {
+  try {
+    const users = await UserService.getAll();
+
+    var fecha2 = moment(new Date());
+    const array = users.filter(
+      (user) => fecha2.diff(moment(user.last_connection), "days") > 2
+    );
+
+    if (array.length > 0) {
+      const promises = array.map(async (data) => {
+        const nombre = data.first_name;
+        const email = data.email;
+        const conexion = moment(data.last_connection).format('DD-MM-YYYY');
+        // Envio Mail avisando al usuario que se elimno su cuenta
+        const mailerConfig = {
+          // uri:wtimeoutMS,
+          service: "gmail",
+          auth: {
+            user: config.NODEMAILER_USER,
+            pass: config.NODEMAILER_PASS,
+          },
+        };
+        let transporter = nodemailer.createTransport(mailerConfig);
+        let message = {
+          from: config.NODEMAILER_USER,
+          to: email,
+          subject: "Usuario Eliminado",
+          html: `<h1>Hola ${nombre}</h1> <hr/> Su cuenta ha sido dada de baja debido a que 
+           presenta inactividad desde el día ${conexion} `,
+        };
+
+
+        await transporter.sendMail(message);
+        // Elimino usuario y carrito del usuario
+        await UserService.delete(data._id.toString());
+        await CartService.delete(data.cart.toString());
+
+      });
+
+      Promise.all(promises)
+        .then(() => {
+          res.status(200).json({ status: "Cuenta/s Eliminada/s" });
+        })
+        .catch((error) => {
+          res.status(500).json({ status: "error", payload: error });
+        });
+    }
+  } catch (err) {
+    res.status(500).json({ status: "error", error: err.message });
+  }
+};

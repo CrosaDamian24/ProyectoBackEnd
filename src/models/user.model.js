@@ -6,12 +6,12 @@ const userCollection = "users"
 const userSchema = new mongoose.Schema({
     first_name: String,
     last_name: String,
-    email: {type:String ,unique : true },
+    email: {type:String,unique : true },
     age: Number,
     password: String,
     role: { type: String, default : "User"},
     cart: {type: mongoose.Schema.Types.ObjectId, ref: "carts"},
-    last_connection : {type : String,default: moment().format("DD/MM/YYYY HH:mm:ss") , requiered : true},
+    last_connection : {type : Date,default: Date.now , requiered : true},
     documents: {
         type: [{
             name: String,

@@ -1,4 +1,3 @@
-import cartModel from "../models/cart.model.js";
 import { CartService } from "../services/index.js";
 
   export const getCartByIdController = async (req, res) => {
@@ -16,9 +15,11 @@ import { CartService } from "../services/index.js";
           products: cart.products.map((prod) => prod.toObject()),
         }; //creo un objeto con la prop products, y ahi mapeo el products de cart, pero esta vez transformados objetos, asi puedo acceder a sus propiedades en la vista
     
-        // console.log(cartPrsoducts.products);
-    
-        res.render("cart", { cartProducts, lean: true });
+      
+        const user = req.user.user; 
+   
+        res.render("cart", { cartProducts,user, lean: true });
+        // res.render("home", { products, user});
       }else{
         res.status(401).render('errors/base', { error: "No existe el carrito" })
         // res.send({ error: 'No existe el carrito!'})

@@ -235,6 +235,8 @@ export const createTicketController = async (req, res) => {
     const cid = req.params.cid;
     const cart = await CartService.getByIdPopulate(cid);
     const totCompra = [];
+    let productsComprados = [];
+
 
     const promises = cart.products.map(async (data) => {
       let listProduct = await ProductService.getById(
@@ -248,23 +250,29 @@ export const createTicketController = async (req, res) => {
         listProduct.stock = quantity;
         await ProductService.update(listProduct._id, listProduct);
 
+         //ingreso los products comprados a este array antes de eliminarlos del cart
+         productsComprados.push({ product: listProduct._id, quantity: data.quantity });
+
         // Borro el producto del carrito
         // const cart= await CartService.getById(cid)
 
         const indice = await cart.products.findIndex(
           (prod) => prod.product.toString() === listProduct._id.toString()
+        
         );
-
+        console.log(productsComprados);
         if (indice >= 0) {
           await cart.products.splice(indice, 1);
-
+     
           await CartService.updateOne({ _id: cart._id.toString() }, cart);
         }
       }
+    
     });
-
+   
     Promise.all(promises)
       .then(async () => {
+  
         // envía el arreglo todas las respuestas. Todas pasaron
         //     console.log(totCompra)
         const total = totCompra.reduce((a, b) => a + b, 0);
@@ -289,7 +297,8 @@ export const createTicketController = async (req, res) => {
           //  console.log(code)
           await TicketService.create(newTicket);
         }
-        res.status(200).json({ status: "success", SinComprar: cart.products });
+
+        res.status(200).json({ status: "success", SinComprar: cart.products , Comprados:productsComprados});
       })
       .catch((err) => {
         // hubo alguna respuesta. Informo.
@@ -311,4 +320,18 @@ export const createTicketController = async (req, res) => {
   // }else
   //  await cart.addCart(carrito.products)
   // return res.send({Status:"Succes", Mensaje:"Carrito creado con éxito!"})
-};
+}
+export const deleteCartController = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // busco los datos del poducto
+    await CartService.delete(id);
+ 
+
+
+    res.status(200).json({ status: "succes",message:"Carrito eliminado" });
+    // }
+  } catch (err) {
+    res.status(500).json({ status: "error", error: err.message });
+  };
+}

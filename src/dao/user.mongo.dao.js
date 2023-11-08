@@ -6,6 +6,7 @@ export default class UsertDAO {
     getOne = async(email) => await userModel.findOne(email).lean().exec()
     updateUser= async(id, data)=> await userModel.findByIdAndUpdate(id, data, { returnDocument: "after" })
     create = async(data) => await userModel.create(data)
+    delete = async(id) => await userModel.findByIdAndDelete(id)
 
   
 }

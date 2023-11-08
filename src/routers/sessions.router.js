@@ -43,7 +43,7 @@ router.get('/githubcallback',
 )
 
 // datos cliente
-router.get("/current", getCurrent) 
+router.get("/current",passportCall("jwt"), getCurrent) 
 
 //Restablecer contraseña
 router.post('/forget-password',forgetPassword)

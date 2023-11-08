@@ -1,13 +1,15 @@
 <div id="formulario1">
 
-
-  <a    >Bienvenido: </a>
+  <a>Bienvenido: </a>
   <strong>{{user.first_name}}</strong>
   <br />
   <a>Rol: </a>
-  <strong  href="/views/carts/{{user.role}}" id="role" >{{user.role}} </strong>
-     <a  href="/views/carts/{{user.cart}}" id="cart">Cart</a>
-      {{!-- <a  href="/api/carts/{{user.cart}}" id="cart">Cart</a> --}}
+  <strong href="/views/carts/{{user.role}}" id="role">{{user.role}} </strong><br
+  />
+
+  <a href="/views/carts/{{user.cart}}" id="cart">Cart</a>
+
+  {{!-- <a  href="/api/carts/{{user.cart}}" id="cart">Cart</a> --}}
   <br />
   <button {{!-- onclick="addLink(`{{this._id}}`)" --}}><a
       href="/session/logout"
@@ -25,7 +27,7 @@
         </li>
     </div>
 {{/each}} --}}
-<div >
+<div>
   <table>
     <thead>
       <tr>
@@ -42,7 +44,6 @@
     <tbody>
       {{#each products.docs}}
 
- 
         <tr>
           <td>{{this.title}}</td>
           <td>{{this.description}}</td>
@@ -52,19 +53,15 @@
           <td>{{this.category}}</td>
           <td>{{this.thumbnails}}</td>
           <td>
-                   <button id="boton"
+            <button
+              id="boton"
               class="btn btn-success"
               onclick="addLink(`{{this._id}}`)"
-               {{!-- onclick="addLink(`{{this._id}}`)" --}}
-               {{!-- onclick="addLink(`{{this._id}}`)" --}}
-              {{!-- disabled="" --}}
-              onload="myFunction()"
             >Add </button>
-            </td>
+          </td>
 
-         </tr>
+        </tr>
       {{/each}}
-      
 
     </tbody>
   </table>
@@ -87,11 +84,8 @@
   </div>
 
 </div>
-     <script>
-function myFunction() {
-    document.getElementById("boton").setAttribute("disabled", "true"); 
-  }
+<script>
 
-    </script>
+</script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/addLink.js"></script>

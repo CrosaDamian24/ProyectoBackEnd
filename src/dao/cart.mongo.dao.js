@@ -6,5 +6,6 @@ export default class CartDAO {
     getById = async(id) => await cartModel.findById(id)
     create = async(data) => await cartModel.create(data);
     updateOne = async(id,data) => await cartModel.updateOne(id,data,{ new:true})
+    delete = async(id) => await cartModel.findByIdAndDelete(id)
 
 }

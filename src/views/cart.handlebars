@@ -1,28 +1,50 @@
 <div>
-    
+  <a>Carrito de compras de {{user.first_name}} {{user.last_name}}</a>
 
-    <table class="table table-dark">
-        <thead>
-            <tr>
-                <th scope="col">Nombre</th>
-                {{!-- <th scope="col">Descripción</th>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Producto</th>
+        <th scope="col">Precio</th>
+        {{! <th scope="col">Descripción</th>
                 <th scope="col">Precio</th>
-                <th scope="col">Fotografías</th> --}}
-                <th scope="col">Cantidad</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each cartProducts.products}}
-            {{!-- dentro de cartProducts, recorro products, y luego entro a cada prop instanciando
-            this.product.propiedad --}}
-            <tr>
-                <td>{{this.product.title}}</td>
-                {{!-- <td>{{this.product.description}}</td>
+                <th scope="col">Fotografías</th> }}
+        <th scope="col">Cantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each cartProducts.products}}
+        {{! dentro de cartProducts, recorro products, y luego entro a cada prop instanciando
+            this.product.propiedad }}
+        <tr>
+          <td>{{this.product.title}}</td>
+          <td>{{this.product.price}}</td>
+          {{!-- <td>{{this.product.description}}</td>
                 <td>{{this.product.price}}</td>
                 <td>{{this.product.thumbnails}}</td> --}}
-                <td>{{this.quantity}}</td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+          <td>{{this.quantity}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{!-- <button id="boton"
+              class="btn btn-success"
+              onclick="comprar(`{{user.cart}}`)"
+  
+            >Comprar </button> --}}
+  <div>
+    <form
+      action="/api/carts/{{user.cart}}/purchase"
+      method="post"
+    >
+
+      <button type="submit">Comprar</button>
+       <a href="/views/products/" id="cart">Volver</a>
+    </form>
+
+  </div>
+ 
+
 </div>
+
+<script src="/js/comprar.js"></script>

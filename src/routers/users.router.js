@@ -4,7 +4,7 @@ import {
         updateRolUser
          } from '../controllers/users.controller.js'
 import { uploader } from "../middleware/multer.js";
-import { sendDocument, getAllUsersController} from "../controllers/users.controller.js";
+import { sendDocument, getAllUsersController, deleteUsersController} from "../controllers/users.controller.js";
 import { handlePolicies } from "../middleware/middleware.js";
 // con FileSystem
 // import { ProductManager } from '../dao/fsManagers/ProductManager.js'
@@ -27,5 +27,8 @@ router.put("/:uid/documents",uploader.fields([{name:"identificacion"},{name:"dom
 
 //TODOS los Usuarios
 router.get("/",handlePolicies(['ADMIN']), getAllUsersController);
+
+//BORRO USUARIOS CON MAS DE 2 DIAS DE INACTIVIDAD
+router.delete("/",deleteUsersController);
 
 export default router;
